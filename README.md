@@ -1,10 +1,14 @@
 # Compositional Game Theory for Neural Networks
 
-This repository includes:
+This repository explores the application of compositional game
+theory, as introduced in the paper *Compositional Game Theory* [1] to
+the analysis and enhancement of neural networks. We represent neural
+network components as players in open games, aiming to leverage
+game-theoretic tools for improved training and understanding.
 
-- cgtnnlib, a library for performing my particular research on the application
-  of the compositional game theory [1] to neural network architecture design
-  and analysis
+It includes:
+
+- cgtnnlib, a library for performing my research
 - notebooks for running experiments
 
 ## How to run

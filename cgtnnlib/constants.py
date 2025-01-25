@@ -1,0 +1,18 @@
+## Constants v.0.2
+## Created at Tue 14 Jan 2025
+## Updated at Sun 19 Jan 2025
+
+ITERATIONS = 10
+REPORT_DIR = 'report/'
+DATA_DIR = 'data'
+DRY_RUN = False
+EPOCHS = 20
+LEARNING_RATE = 0.00011
+TEST_SAMPLE_SIZE = 0.2
+RANDOM_STATE = 23432
+BATCH_SIZE = 12
+PMLB_TARGET_COL = 'target'
+NOISE_SAMPLES_COUNT = 50
+NOISE_FACTORS = [
+    x * 2/NOISE_SAMPLES_COUNT for x in range(NOISE_SAMPLES_COUNT)
+]

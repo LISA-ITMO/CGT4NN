@@ -1,0 +1,36 @@
+# Managed by torchvision
+data/MNIST
+
+# Let's not commit pytorch models
+*.pth
+
+# Python bytecode cache
+*.pyc
+
+# These have been downloaded by cgtnnlib
+wisc_bc_data.csv
+car_evaluation.csv
+eye_movements.csv
+wine_quality.csv
+
+# Figures
+report/*.png
+
+# Some reports
+report.json
+report copy.json
+report-eval.json
+report-loss.json
+
+# Jupyter checkpoints
+.ipynb_checkpoints
+
+# macOS
+.DS_Store
+
+reports/*.json
+reports/*.png
+plots/*.png
+
+# PMLB cached data
+*.tsv.gz

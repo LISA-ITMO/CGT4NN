@@ -13,3 +13,8 @@ This repository includes:
 2. Install dependencies: `pip install -r requirements.txt`
 3. Open a notebook `*.ipynb` file with any .ipynb reader available to you
    and run
+
+## References
+
+1. N. Ghani, J. Hedges, V. Winschel, and P. Zahn. *Compositional game theory*.
+   Mar 2016. https://arxiv.org/abs/1603.04641

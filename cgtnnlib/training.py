@@ -14,6 +14,9 @@ from IPython.display import clear_output
 from cgtnnlib.Dataset import Dataset
 from cgtnnlib.ExperimentParameters import ExperimentParameters
 from cgtnnlib.Report import Report
+from cgtnnlib.ExperimentParameters import iterate_experiment_parameters
+from cgtnnlib.constants import DRY_RUN, EPOCHS, LEARNING_RATE
+from cgtnnlib.report_instance import report
 from cgtnnlib.torch_device import TORCH_DEVICE
 
 from cgtnnlib.nn.AugmentedReLUNetwork import AugmentedReLUNetwork
@@ -152,3 +155,17 @@ def save_model_to_path(
 ):
     print(f"train_model_outer(): saved model to {path}")
     torch.save(model.state_dict(), path)
+
+
+def train_main(
+    pp: list[float],
+    datasets: list[Dataset],
+):
+    create_and_train_all_models(
+        datasets=datasets,
+        epochs=EPOCHS,
+        learning_rate=LEARNING_RATE,
+        report=report,
+        dry_run=DRY_RUN,
+        experiment_params_iter=iterate_experiment_parameters(pp)
+    )

@@ -125,3 +125,14 @@ class Dataset:
         
         _data: DatasetData = self._data
         return _data
+    
+    def __repr__(self):
+        return ''.join([
+            f'Dataset #{self.number} {{', '\n',
+            f'  name: "{self.name}"', '\n',
+            f'  learning_task: {self.learning_task}', '\n',
+            f'  classes_count: {self.classes_count}', '\n',
+            f'  target: "{self.target}"', '\n',
+            f'  _data: {self._data}', '\n',
+            '}',
+        ])

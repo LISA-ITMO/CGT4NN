@@ -94,7 +94,7 @@ class Dataset:
         return f'pth/model-{self.number}B-c-P{params.p}_N{params.iteration}.pth'
 
     def model_path(self, params: ExperimentParameters, model: NetworkLike) -> str:
-        "!!! Please use this"
+        "!!! Please don't use this"
 
         return f'pth/cgtnn-{self.number}X-{type(model).__name__}-c-P{params.p}_N{params.iteration}.pth'
 
@@ -111,6 +111,7 @@ class Dataset:
             )
             
             self._data = DatasetData(
+                df=df,
                 train_dataset=train,
                 test_dataset=test,
                 train_loader=DataLoader(

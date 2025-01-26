@@ -3,7 +3,7 @@
 ## Updated at Wed 4 Dec 2024
 ## v.0.3 - removed train_model_outer()
 
-from typing import Iterable
+from typing import Callable, Iterable
 import torch
 import torch.nn as nn
 import torch.nn.init as init
@@ -13,13 +13,16 @@ from IPython.display import clear_output
 
 from cgtnnlib.Dataset import Dataset
 from cgtnnlib.ExperimentParameters import ExperimentParameters
+from cgtnnlib.NoiseGenerator import NoiseGenerator, no_noise_generator
 from cgtnnlib.Report import Report
 from cgtnnlib.ExperimentParameters import iterate_experiment_parameters
 from cgtnnlib.constants import DRY_RUN, EPOCHS, LEARNING_RATE
-from cgtnnlib.report_instance import report
+from cgtnnlib.path import loss_report_key
 from cgtnnlib.torch_device import TORCH_DEVICE
 
 from cgtnnlib.nn.AugmentedReLUNetwork import AugmentedReLUNetwork
+
+import cgtnnlib.path
 
 
 PRINT_TRAINING_SPAN = 499
@@ -30,6 +33,16 @@ def init_weights(m: nn.Module):
         m.bias.data.fill_(0.01)
 
 
+def add_noise_to_tensor(
+    input: torch.Tensor,
+    generate_sample: Callable[[], float],
+) -> torch.Tensor:
+    return input + torch.tensor(
+        [generate_sample() for _ in range(input.numel())],
+        dtype=input.dtype
+    ).reshape(input.shape)
+
+
 def train_model(
     model: nn.Module,
     dataset: Dataset,
@@ -38,6 +51,7 @@ def train_model(
     p: float,
     criterion,
     optimizer,
+    noise_generator: NoiseGenerator,
 ) -> list[float]:
     losses: list[float] = []
     total_samples = len(dataset.data.train_loader)
@@ -51,7 +65,11 @@ def train_model(
         labels: torch.Tensor
 
         for i, (inputs, labels) in enumerate(dataset.data.train_loader):
-            inputs, labels = inputs.to(TORCH_DEVICE), labels.to(TORCH_DEVICE)
+            inputs = inputs.to(TORCH_DEVICE)
+            labels = add_noise_to_tensor(
+                input=labels,
+                generate_sample=noise_generator.next_sample,
+            ).to(TORCH_DEVICE)
 
             optimizer.zero_grad()
             outputs = model(inputs)
@@ -65,7 +83,9 @@ def train_model(
             if i % PRINT_TRAINING_SPAN == 0:
                 clear_output(wait=True)
                 print(
-                    f'N={iteration} #{dataset.number}',
+                    f'N={iteration}',
+                    f'#{dataset.number}',
+                    f'g{noise_generator.name}',
                     f'p={p}',
                     f'E{epoch}/{epochs}',
                     f'S{total_samples}',
@@ -78,14 +98,13 @@ def train_model(
     return losses
 
 def create_and_train_model(
-    model_path: str,
     dataset: Dataset,
     epochs: int,
     learning_rate: float,
-    report: Report,
     dry_run: bool,
     p: float,
     iteration: int,    
+    noise_generator: NoiseGenerator
 ):
     model = AugmentedReLUNetwork(
         inputs_count=dataset.features_count,
@@ -93,16 +112,37 @@ def create_and_train_model(
         p=p
     )
 
+    model_path = cgtnnlib.path.model_path(
+        dataset_number=dataset.number,
+        model=model,
+        p=p,
+        iteration=iteration,
+        noise_generator=noise_generator
+    )
+
     model.apply(init_weights)
     model = model.to(TORCH_DEVICE)
+    
+    report_name = cgtnnlib.path.model_name(
+        dataset_number=dataset.number,
+        model=model,
+        p=p,
+        iteration=iteration,
+        noise_generator=noise_generator
+    )
+ 
+    report = Report(
+        dir='pth/',
+        filename=report_name + '.json'
+    )
 
-    running_losses: list[float]
+    losses: list[float]
 
     if dry_run:
         print(f"NOTE: Training model {model} in dry run mode. No changes to weights will be applied. An array of {epochs} -1.0s is generated for running_losses.")
-        running_losses = [-1.0 for _ in range(epochs)]
+        losses = [-1.0 for _ in range(epochs)]
     else:
-        running_losses = train_model(
+        losses = train_model(
             model=model,
             dataset=dataset,
             epochs=epochs,
@@ -112,40 +152,41 @@ def create_and_train_model(
             optimizer=optim.Adam(
                 model.parameters(),
                 lr=learning_rate,
-            )
+            ),
+            noise_generator=noise_generator,
         )
 
-    report.record_running_losses(
-        running_losses,
+
+    report.append(loss_report_key(
         model,
         dataset,
         p,
         iteration,
-    )
+    ), { 'loss': losses })
 
     torch.save(model.state_dict(), model_path)
     print(f"create_and_train_model(): saved model to {model_path}")
+ 
+    report.save()
 
 
 def create_and_train_all_models(
     datasets: list[Dataset],
     epochs: int,
     learning_rate: float,
-    report: Report,
     dry_run: bool,
     experiment_params_iter: Iterable[ExperimentParameters]
 ):
     for experiment_params in experiment_params_iter:
         for dataset in datasets:
             create_and_train_model(
-                model_path=dataset.model_b_path(experiment_params),
                 dataset=dataset,
                 epochs=epochs,
                 learning_rate=learning_rate,
-                report=report, 
                 dry_run=dry_run,
                 p=experiment_params.p,
                 iteration=experiment_params.iteration, 
+                noise_generator=no_noise_generator,
             )
             
 def train_main(
@@ -156,7 +197,6 @@ def train_main(
         datasets=datasets,
         epochs=EPOCHS,
         learning_rate=LEARNING_RATE,
-        report=report,
         dry_run=DRY_RUN,
         experiment_params_iter=iterate_experiment_parameters(pp)
     )

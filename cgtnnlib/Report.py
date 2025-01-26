@@ -18,11 +18,8 @@ import torch
 import numpy as np
 import pandas as pd
 
-from cgtnnlib.Dataset import Dataset
-from cgtnnlib.ExperimentParameters import ExperimentParameters
 from cgtnnlib.PlotModel import PlotModel
 
-from cgtnnlib.nn.NetworkLike import NetworkLike
 
 
 SearchIndex: TypeAlias = pd.DataFrame
@@ -47,20 +44,18 @@ def see_value(value) -> str:
 
 class Report:
     dir: str
+    filename: str
     raw: RawReport = {
         'started': now_isoformat()
     }
     
-    def __init__(self, dir: str):
+    def __init__(self, dir: str, filename: str = 'report.json'):
         self.dir = dir
+        self.filename = filename
         if os.path.exists(self.path):
             print(f"Report found at {self.path}. Loading...")
             self.raw = load_raw_report(self.path)
             print("Report loaded.")
-    
-    @property 
-    def filename(self):
-        return 'report.json'
     
     @property
     def path(self):
@@ -83,26 +78,6 @@ class Report:
         for key in self.raw:
             value = self.raw[key]
             print(f"{key}: {see_value(value)}")
-    
-    def record_running_losses(
-        self,
-        running_losses: list[float],
-        model: NetworkLike,
-        dataset: Dataset,
-        p: float,
-        iteration: int,
-    ):
-        key = f'loss_{type(model).__name__}_{dataset.number}_p{p}_N{iteration}'
-        self.append(key, running_losses)
-        
-
-def eval_report_key(
-    model_name: str,
-    dataset_number: int,
-    p: float,
-    iteration: int,
-) -> str:
-    return f'evaluate_{model_name}_{dataset_number}_p{p}_N{iteration}'
 
 
 def load_raw_report(path: str) -> RawReport:

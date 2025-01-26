@@ -2,7 +2,6 @@ from typing import TypedDict
 from IPython.display import clear_output
 
 import numpy as np
-import pandas as pd
 from sklearn.metrics import f1_score, mean_squared_error, r2_score, roc_auc_score
 
 import torch
@@ -12,10 +11,11 @@ from cgtnnlib.Dataset import Dataset
 from cgtnnlib.EvaluationParameters import EvaluationParameters
 from cgtnnlib.ExperimentParameters import ExperimentParameters
 from cgtnnlib.LearningTask import is_classification_task, is_regression_task
-from cgtnnlib.Report import Report, eval_report_key
+from cgtnnlib.Report import Report
 from cgtnnlib.ExperimentParameters import iterate_experiment_parameters
 from cgtnnlib.constants import NOISE_FACTORS
 from cgtnnlib.nn.AugmentedReLUNetwork import AugmentedReLUNetwork
+from cgtnnlib.path import eval_report_key
 from cgtnnlib.report_instance import report
 
 

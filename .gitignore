@@ -1,8 +1,9 @@
 # Managed by torchvision
 data/MNIST
 
-# Let's not commit pytorch models
-*.pth
+# Let's not commit pytorch models and reports
+pth/*.pth
+pth/*.json
 
 # Python bytecode cache
 *.pyc

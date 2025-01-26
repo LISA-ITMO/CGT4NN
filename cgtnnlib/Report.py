@@ -89,9 +89,10 @@ class Report:
         running_losses: list[float],
         model: NetworkLike,
         dataset: Dataset,
-        experiment_params: ExperimentParameters,
+        p: float,
+        iteration: int,
     ):
-        key = f'loss_{type(model).__name__}_{dataset.number}_p{experiment_params.p}_N{experiment_params.iteration}'
+        key = f'loss_{type(model).__name__}_{dataset.number}_p{p}_N{iteration}'
         self.append(key, running_losses)
         
 

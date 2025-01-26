@@ -114,7 +114,7 @@ def create_and_train_model(
 
     model_path = cgtnnlib.path.model_path(
         dataset_number=dataset.number,
-        model=model,
+        model_type=type(model),
         p=p,
         iteration=iteration,
         noise_generator=noise_generator
@@ -125,7 +125,7 @@ def create_and_train_model(
     
     report_name = cgtnnlib.path.model_name(
         dataset_number=dataset.number,
-        model=model,
+        model_type=type(model),
         p=p,
         iteration=iteration,
         noise_generator=noise_generator

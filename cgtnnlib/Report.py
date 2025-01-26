@@ -49,13 +49,20 @@ class Report:
         'started': now_isoformat()
     }
     
-    def __init__(self, dir: str, filename: str = 'report.json'):
+    def __init__(
+        self,
+        dir: str,
+        filename: str = 'report.json',
+        must_exist: bool = False,
+    ):
         self.dir = dir
         self.filename = filename
         if os.path.exists(self.path):
             print(f"Report found at {self.path}. Loading...")
             self.raw = load_raw_report(self.path)
             print("Report loaded.")
+        elif must_exist:
+            raise LookupError(f'Report at {self.path} must exist, but it doesn\'t')
     
     @property
     def path(self):

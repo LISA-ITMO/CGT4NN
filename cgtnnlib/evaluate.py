@@ -16,7 +16,6 @@ from cgtnnlib.ExperimentParameters import iterate_experiment_parameters
 from cgtnnlib.constants import NOISE_FACTORS
 from cgtnnlib.nn.AugmentedReLUNetwork import AugmentedReLUNetwork
 from cgtnnlib.path import eval_report_key
-from cgtnnlib.report_instance import report
 
 
 class EvalAccuracyF1RocAucSamples(TypedDict):
@@ -147,14 +146,13 @@ def evaluate_classification_over_noise(
 
 def eval_inner(
     eval_params: EvaluationParameters,
-    experiment_params: ExperimentParameters,
     constructor: type,
     report: Report, 
 ):
     evaluated_model = constructor(
         inputs_count=eval_params.dataset.features_count,
         outputs_count=eval_params.dataset.classes_count,
-        p=experiment_params.p
+        p=eval_params.experiment_parameters.p
     )
 
     clear_output(wait=True)
@@ -209,7 +207,6 @@ def evaluate(
     for (i, eval_params) in enumerate(eval_params_items):
         eval_inner(
             eval_params,
-            experiment_params,
             constructor,
             report,
         )

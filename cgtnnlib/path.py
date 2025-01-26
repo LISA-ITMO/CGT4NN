@@ -1,4 +1,5 @@
 ## Path generation, dict key generation, etc. - the Hub of Identity
+from typing import Type
 
 from cgtnnlib.Dataset import Dataset
 from cgtnnlib.NoiseGenerator import NoiseGenerator
@@ -7,21 +8,22 @@ from cgtnnlib.nn.NetworkLike import NetworkLike
 
 def model_name(
     dataset_number: int,
-    model: NetworkLike,
+    model_type: Type[NetworkLike],
     p: float,
     iteration: int,
     noise_generator: NoiseGenerator,
 ):
-    return f'cgtnn-{dataset_number}Y-{type(model).__name__}-g{noise_generator.name}-P{p}_N{iteration}'
+    return f'cgtnn-{dataset_number}Y-{model_type.__name__}-g{noise_generator.name}-P{p}_N{iteration}'
+
 
 def model_path(
     dataset_number: int,
-    model: NetworkLike,
+    model_type: Type[NetworkLike],
     p: float,
     iteration: int,
     noise_generator: NoiseGenerator,
 ):
-    return f'pth/{model_name(dataset_number, model, p, iteration, noise_generator)}.pth'
+    return f'pth/{model_name(dataset_number, model_type, p, iteration, noise_generator)}.pth'
 
 
 def loss_report_key(

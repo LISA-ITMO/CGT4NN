@@ -1,3 +1,4 @@
+from typing import TypedDict
 from IPython.display import clear_output
 
 import numpy as np
@@ -15,6 +16,20 @@ from cgtnnlib.Report import Report, eval_report_key
 from cgtnnlib.ExperimentParameters import iterate_experiment_parameters
 from cgtnnlib.constants import NOISE_FACTORS
 from cgtnnlib.nn.AugmentedReLUNetwork import AugmentedReLUNetwork
+from cgtnnlib.report_instance import report
+
+
+class EvalAccuracyF1RocAucSamples(TypedDict):
+    noise_factor: list[float]
+    accuracy: list[float]
+    f1: list[float]
+    roc_auc: list[float]
+
+
+class EvalR2MseSamples(TypedDict):
+    noise_factor: list[float]
+    r2: list[float]
+    mse: list[float]
 
 
 def eval_accuracy_f1_rocauc(
@@ -57,7 +72,6 @@ def eval_accuracy_f1_rocauc(
 
     return float(accuracy), float(f1), float(roc_auc)
 
-
 def eval_r2_mse(
     evaluated_model: torch.nn.Module,
     dataset: Dataset,
@@ -86,12 +100,12 @@ def eval_r2_mse(
 def eval_regression_over_noise(
     evaluated_model: torch.nn.Module,
     dataset: Dataset,
-)-> dict:
-    samples = {
+)-> EvalR2MseSamples:
+    samples = EvalR2MseSamples({
         'noise_factor': NOISE_FACTORS,
         'r2': [],
         'mse': [],
-    }
+    })
 
     for noise_factor in NOISE_FACTORS:
         r2, mse = eval_r2_mse(
@@ -109,13 +123,13 @@ def eval_regression_over_noise(
 def evaluate_classification_over_noise(
     evaluated_model: torch.nn.Module,
     dataset: Dataset,
-)-> dict:
-    samples = {
+)-> EvalAccuracyF1RocAucSamples:
+    samples = EvalAccuracyF1RocAucSamples({
         'noise_factor': NOISE_FACTORS,
         'accuracy': [],
         'f1': [],
         'roc_auc': [],
-    }
+    })
 
     for noise_factor in NOISE_FACTORS:
         accuracy, f1, roc_auc = eval_accuracy_f1_rocauc(
@@ -146,17 +160,17 @@ def eval_inner(
     clear_output(wait=True)
     print(f'Evaluating model at {eval_params.model_path}...')
     evaluated_model.load_state_dict(torch.load(eval_params.model_path))
-
+    
     if is_classification_task(eval_params.task):
-        samples = evaluate_classification_over_noise(
+        samples = dict(evaluate_classification_over_noise(
             evaluated_model=evaluated_model,
             dataset=eval_params.dataset,
-        )
+        ))
     elif is_regression_task(eval_params.task):
-        samples = eval_regression_over_noise(
+        samples = dict(eval_regression_over_noise(
             evaluated_model=evaluated_model,
             dataset=eval_params.dataset,
-        )
+        ))
     else:
         raise ValueError(f"Unknown task: {eval_params.task}")
 
@@ -196,7 +210,8 @@ def evaluate(
         eval_inner(
             eval_params,
             experiment_params,
-            constructor
+            constructor,
+            report,
         )
 
 

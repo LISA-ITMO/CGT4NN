@@ -19,10 +19,6 @@ class EvaluationParameters:
     report_key: str
     
     @property
-    def is_binary_classification(self) -> bool:
-        return self.dataset.classes_count == 2
-    
-    @property
     def is_regression(self) -> bool:
         return is_regression_task(self.task)
     

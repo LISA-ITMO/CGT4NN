@@ -11,7 +11,7 @@ from cgtnnlib.Dataset import Dataset
 from cgtnnlib.EvaluationParameters import EvaluationParameters
 from cgtnnlib.ExperimentParameters import ExperimentParameters
 from cgtnnlib.LearningTask import is_classification_task, is_regression_task
-from cgtnnlib.Report import eval_report_key
+from cgtnnlib.Report import Report, eval_report_key
 from cgtnnlib.ExperimentParameters import iterate_experiment_parameters
 from cgtnnlib.constants import NOISE_FACTORS
 from cgtnnlib.nn.AugmentedReLUNetwork import AugmentedReLUNetwork
@@ -21,7 +21,6 @@ def eval_accuracy_f1_rocauc(
     evaluated_model: torch.nn.Module,
     dataset: Dataset,
     noise_factor: float,
-    is_binary_classification: bool,
 ) -> tuple[float, float, float]:
     evaluated_model.eval()
     correct = 0
@@ -47,9 +46,11 @@ def eval_accuracy_f1_rocauc(
     accuracy = correct / total
     f1 = f1_score(all_labels, all_predictions, average='weighted')
 
-    if is_binary_classification:
+    if dataset.classes_count == 2:
+        # Binary classification
         np_all_probs = np.array(all_probs)[:, 0]
     else:
+        # Non-binary classification
         np_all_probs = np.array(all_probs)
 
     roc_auc = roc_auc_score(all_labels, np_all_probs, multi_class='ovr')
@@ -82,11 +83,10 @@ def eval_r2_mse(
     return float(r2), float(mse)
 
 
-def eval_regression_and_report(
+def eval_regression_over_noise(
     evaluated_model: torch.nn.Module,
     dataset: Dataset,
-    report_key: str,
-)-> pd.DataFrame:
+)-> dict:
     samples = {
         'noise_factor': NOISE_FACTORS,
         'r2': [],
@@ -103,17 +103,13 @@ def eval_regression_and_report(
         samples['r2'].append(r2)
         samples['mse'].append(mse)
 
-    report.append(report_key, samples)
-
-    return pd.DataFrame(samples)
+    return samples
 
 
-def evaluate_classification_and_report(
+def evaluate_classification_over_noise(
     evaluated_model: torch.nn.Module,
     dataset: Dataset,
-    report_key: str,
-    is_binary_classification: bool,
-)-> pd.DataFrame:
+)-> dict:
     samples = {
         'noise_factor': NOISE_FACTORS,
         'accuracy': [],
@@ -126,22 +122,20 @@ def evaluate_classification_and_report(
             evaluated_model=evaluated_model,
             dataset=dataset,
             noise_factor=noise_factor,
-            is_binary_classification=is_binary_classification,
         )
 
         samples['accuracy'].append(accuracy)
         samples['f1'].append(f1)
         samples['roc_auc'].append(roc_auc)
 
-    report.append(report_key, samples)
-
-    return pd.DataFrame(samples)
+    return samples
 
 
 def eval_inner(
     eval_params: EvaluationParameters,
     experiment_params: ExperimentParameters,
     constructor: type,
+    report: Report, 
 ):
     evaluated_model = constructor(
         inputs_count=eval_params.dataset.features_count,
@@ -154,24 +148,22 @@ def eval_inner(
     evaluated_model.load_state_dict(torch.load(eval_params.model_path))
 
     if is_classification_task(eval_params.task):
-        df = evaluate_classification_and_report(
+        samples = evaluate_classification_over_noise(
             evaluated_model=evaluated_model,
             dataset=eval_params.dataset,
-            report_key=eval_params.report_key,
-            is_binary_classification=eval_params.is_binary_classification
         )
-        print('Evaluation of classification (head):')
-        print(df.head())
     elif is_regression_task(eval_params.task):
-        df = eval_regression_and_report(
+        samples = eval_regression_over_noise(
             evaluated_model=evaluated_model,
             dataset=eval_params.dataset,
-            report_key=eval_params.report_key
         )
-        print('Evaluation of regression (head):')
-        print(df.head())
     else:
         raise ValueError(f"Unknown task: {eval_params.task}")
+
+    report.append(
+        key=eval_params.report_key,
+        data=samples
+    )
 
 
 def evaluate(

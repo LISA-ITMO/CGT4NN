@@ -14,10 +14,9 @@ from IPython.display import clear_output
 from cgtnnlib.Dataset import Dataset
 from cgtnnlib.ExperimentParameters import ExperimentParameters
 from cgtnnlib.NoiseGenerator import NoiseGenerator, no_noise_generator
-from cgtnnlib.Report import Report
+from cgtnnlib.Report import KEY_LOSS, Report
 from cgtnnlib.ExperimentParameters import iterate_experiment_parameters
 from cgtnnlib.constants import DRY_RUN, EPOCHS, LEARNING_RATE
-from cgtnnlib.path import loss_report_key
 from cgtnnlib.torch_device import TORCH_DEVICE
 
 from cgtnnlib.nn.AugmentedReLUNetwork import AugmentedReLUNetwork
@@ -157,7 +156,7 @@ def create_and_train_model(
         )
 
 
-    report.set('loss', losses )
+    report.set(KEY_LOSS, losses)
 
     torch.save(model.state_dict(), model_path)
     print(f"create_and_train_model(): saved model to {model_path}")

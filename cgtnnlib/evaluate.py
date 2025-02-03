@@ -11,7 +11,7 @@ from cgtnnlib.Dataset import Dataset
 from cgtnnlib.EvaluationParameters import EvaluationParameters
 from cgtnnlib.ExperimentParameters import ExperimentParameters
 from cgtnnlib.LearningTask import is_classification_task, is_regression_task
-from cgtnnlib.Report import Report
+from cgtnnlib.Report import KEY_EVAL, Report
 from cgtnnlib.ExperimentParameters import iterate_experiment_parameters
 from cgtnnlib.constants import NOISE_FACTORS
 from cgtnnlib.nn.AugmentedReLUNetwork import AugmentedReLUNetwork
@@ -172,10 +172,7 @@ def eval_inner(
     else:
         raise ValueError(f"Unknown task: {eval_params.task}")
 
-    report.set(
-        key=eval_params.report_key,
-        data=samples
-    )
+    report.set(KEY_EVAL, samples)
 
 
 def evaluate(
@@ -208,6 +205,7 @@ def evaluate(
         eval_inner(
             eval_params,
             constructor,
+            # doesn't work, will not fix until i need it
             report,
         )
 

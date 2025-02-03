@@ -13,6 +13,7 @@ from typing import TypeAlias
 from datetime import datetime
 import os
 import json
+import glob
 
 import torch
 import numpy as np
@@ -25,6 +26,8 @@ from cgtnnlib.PlotModel import PlotModel
 SearchIndex: TypeAlias = pd.DataFrame
 RawReport: TypeAlias = dict[str, dict | list | str]
 
+KEY_EVAL = 'eval'
+KEY_LOSS = 'loss'
 
 def now_isoformat() -> str:
     return datetime.now().isoformat()
@@ -40,6 +43,22 @@ def see_value(value) -> str:
         return str(value)
     else:
         return f"{type(value).__name__}(...)"
+
+
+def get_reports_list(folder_path):
+  """
+  Возвращает список имен всех отчётов в указанной папке.
+
+  Args:
+    folder_path: Путь к папке.
+
+  Returns:
+    Список строк, каждая из которых является именем JSON-файла.
+  """
+  pattern = os.path.join(folder_path, "*.json")
+  full_paths = glob.glob(pattern)
+  file_names = [os.path.basename(path) for path in full_paths]
+  return file_names
 
 
 class Report:

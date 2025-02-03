@@ -172,7 +172,7 @@ def eval_inner(
     else:
         raise ValueError(f"Unknown task: {eval_params.task}")
 
-    report.append(
+    report.set(
         key=eval_params.report_key,
         data=samples
     )

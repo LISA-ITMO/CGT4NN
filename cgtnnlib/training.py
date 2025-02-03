@@ -157,12 +157,7 @@ def create_and_train_model(
         )
 
 
-    report.append(loss_report_key(
-        model,
-        dataset,
-        p,
-        iteration,
-    ), { 'loss': losses })
+    report.set('loss', losses )
 
     torch.save(model.state_dict(), model_path)
     print(f"create_and_train_model(): saved model to {model_path}")

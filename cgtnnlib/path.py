@@ -26,15 +26,6 @@ def model_path(
     return f'pth/{model_name(dataset_number, model_type, p, iteration, noise_generator)}.pth'
 
 
-def loss_report_key(
-    model: NetworkLike,
-    dataset: Dataset,
-    p: float,
-    iteration: int,
-) -> str:
-    return f'loss_{type(model).__name__}_{dataset.number}_p{p}_N{iteration}'
-
-
 def eval_report_key(
     model_name: str,
     dataset_number: int,

@@ -68,11 +68,11 @@ class Report:
     def path(self):
         return os.path.join(self.dir, self.filename)
 
-    def append(self, key: str, data: dict | list):
+    def set(self, key: str, data: dict | list):
         self.raw[key] = data
 
     def save(self):
-        self.append('saved', now_isoformat())
+        self.set('saved', now_isoformat())
         with open(self.path, 'w') as file:
             json.dump(self.raw, file, indent=4)
         print(f"Report saved to {self.path}.")

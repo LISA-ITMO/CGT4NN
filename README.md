@@ -36,7 +36,7 @@ modules:
 The `nn` subdirectory contains PyTorch modules and functions that represent
 neural architectures we evaluate
 
-The `doc` subdirectory contains 
+The `doc` subdirectory contains info about datasets.
 
 ## References
 

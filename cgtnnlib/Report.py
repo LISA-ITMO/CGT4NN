@@ -20,6 +20,7 @@ import numpy as np
 import pandas as pd
 
 from cgtnnlib.PlotModel import PlotModel
+from cgtnnlib.constants import MODEL_DIR, REPORT_DIR
 
 
 
@@ -28,6 +29,7 @@ RawReport: TypeAlias = dict[str, dict | list | str]
 
 KEY_EVAL = 'eval'
 KEY_LOSS = 'loss'
+KEY_DATASET = 'dataset'
 
 def now_isoformat() -> str:
     return datetime.now().isoformat()
@@ -45,7 +47,7 @@ def see_value(value) -> str:
         return f"{type(value).__name__}(...)"
 
 
-def get_reports_list(folder_path):
+def get_reports_list() -> list[str]:
   """
   Возвращает список имен всех отчётов в указанной папке.
 
@@ -55,7 +57,7 @@ def get_reports_list(folder_path):
   Returns:
     Список строк, каждая из которых является именем JSON-файла.
   """
-  pattern = os.path.join(folder_path, "*.json")
+  pattern = os.path.join(MODEL_DIR, "*.json")
   full_paths = glob.glob(pattern)
   file_names = [os.path.basename(path) for path in full_paths]
   return file_names
@@ -70,7 +72,7 @@ class Report:
     
     def __init__(
         self,
-        dir: str,
+        dir: str = REPORT_DIR,
         filename: str = 'report.json',
         must_exist: bool = False,
     ):
@@ -89,6 +91,9 @@ class Report:
 
     def set(self, key: str, data: dict | list):
         self.raw[key] = data
+
+    def get(self, key: str):
+        return self.raw[key]
 
     def save(self):
         self.set('saved', now_isoformat())

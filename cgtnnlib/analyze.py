@@ -14,7 +14,7 @@ import pandas as pd
 
 from cgtnnlib.Dataset import Dataset
 from cgtnnlib.PlotModel import PlotModel, Measurement, Metric
-from cgtnnlib.Report import make_search_index, search_plot_data, load_raw_report, SearchIndex, RawReport
+from cgtnnlib.Report import Report, get_reports_list, make_search_index, search_plot_data, load_raw_report, SearchIndex, RawReport
 from cgtnnlib.plt_extras import set_title, set_xlabel, set_ylabel
 
 def df_head_fraction(df: pd.DataFrame, frac: float) -> pd.DataFrame:
@@ -104,7 +104,6 @@ class AnalysisParams(TypedDict):
 
 
 def search_curve(
-    search_index: SearchIndex,
     plot_params: PlotModel,
     raw_report: RawReport,
 ) -> pd.DataFrame:
@@ -120,75 +119,83 @@ def search_curve(
     result = values.quantile([0.25, 0.75]).transpose()
     result['mean'] = values.mean()
 
+    # for zooming
     return df_head_fraction(
         df=result,
         frac=plot_params.frac
     )    
 
 def plot_analysis_fig_from_file(
+    dataset: Dataset,
     filenames: list[str],
     key: str,
     xlabel: str,
     frac: float,
 ) -> None:
-    measurement: Measurement = analysis_params['measurement']
+    measurement_keys [KEY_EVAL, KEY_LOSS]
     dataset_number: int = analysis_params['dataset_number']
     xlabel: str = analysis_params['xlabel']
     frac: float = analysis_params['frac']
     metrics: list[Metric] = analysis_params['metrics']
 
     # Plot grid
+    pp = [0.9]
     nrows = len(metrics)
     ncols = len(pp)
+
     fig, axs = plt.subplots(nrows, ncols, figsize=(24, nrows * ncols))
 
-    for filename in filenames:
+    for filename in get_reports_list():
+        report = Report(filename=filename)
         with open(filename) as json:
             json = json.load(json)
             for key in json:
                 df = pd.DataFrame(json[key])
+
         def make_curve_for_p(p: float) -> pd.DataFrame:
-            return search_curve(
-                search_index=search_index,
-                plot_params=PlotModel(
-                    measurement=measurement,
-                    dataset_number=dataset_number,
-                    model_name='AugmentedReLUNetwork',
-                    metric=metric,
-                    p=p,
-                    frac=frac,
-                ),
-                raw_report=raw_report
-            )
+            raise RuntimeError('broken')
+            # return search_curve(
+            #     search_index=search_index,
+            #     plot_params=PlotModel(
+            #         measurement=measurement,
+            #         dataset_number=dataset_number,
+            #         model_name='AugmentedReLUNetwork',
+            #         metric=metric,
+            #         p=p,
+            #         frac=frac,
+            #     ),
+            #     raw_report=raw_report
+            # )
 
     reference_curve: pd.DataFrame = make_curve_for_p(0)
 
-            for (j, p) in enumerate(pp):
-                plot_deviant_curves_on_ax_or_plt(
-                    ax_or_plt=axs[i, j] if len(metrics) > 1 else axs[j],
-                    models=[{
-                        'curve': reference_curve,
-                        'color': 'lightblue',
-                        'label': 'Mean of p = 0',
-                        'quantiles_color': 'lightgray',
-                        'quantiles_label': '0.25 to 0.75 Quantiles',
-                    }, {
-                        'curve': make_curve_for_p(p),
-                        'color': 'blue',
-                        'label': f'Mean of p = {p}',
-                        'quantiles_color': 'gray',
-                        'quantiles_label': '0.25 to 0.75 Quantiles',
-                    },],
-                    title=f'p = {p}',
-                    xlabel=xlabel,
-                    ylabel=metric,
-                    quantiles_alpha=0.1,
-                )
-        fig.suptitle(f'Dataset #{dataset_number}, zoom factor: {frac}')
-        plt.tight_layout()
-        path = os.path.join('report/', f'{measurement}_{dataset_number}_f{frac:.02f}.png')
-        plt.savefig(path)
-        plt.close()
+    for (j, p) in enumerate(pp):
+        plot_deviant_curves_on_ax_or_plt(
+            ax_or_plt=axs[i, j] if len(metrics) > 1 else axs[j],
+            models=[{
+                'curve': reference_curve,
+                'color': 'lightblue',
+                'label': 'Mean of p = 0',
+                'quantiles_color': 'lightgray',
+                'quantiles_label': '0.25 to 0.75 Quantiles',
+            }, {
+                'curve': make_curve_for_p(p),
+                'color': 'blue',
+                'label': f'Mean of p = {p}',
+                'quantiles_color': 'gray',
+                'quantiles_label': '0.25 to 0.75 Quantiles',
+            },],
+            title=f'p = {p}',
+            xlabel=xlabel,
+            ylabel=metric,
+            quantiles_alpha=0.1,
+        )
+
+    fig.suptitle(f'Dataset #{dataset_number}, zoom factor: {frac}')
+    plt.tight_layout()
+    path = os.path.join('report/', f'{measurement}_{dataset_number}_f{frac:.02f}.png')
+    plt.savefig(path)
+    plt.close()
 
 
 def plot_analysis_fig(

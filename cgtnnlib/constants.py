@@ -4,6 +4,7 @@
 
 ITERATIONS = 10
 REPORT_DIR = 'report/'
+MODEL_DIR = 'pth/'
 DATA_DIR = 'data'
 DRY_RUN = False
 EPOCHS = 20

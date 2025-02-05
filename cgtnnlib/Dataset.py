@@ -98,6 +98,17 @@ class Dataset:
 
         return f'pth/cgtnn-{self.number}X-{type(model).__name__}-c-P{params.p}_N{params.iteration}.pth'
 
+    def to_dict(self) -> dict:
+        return {
+            'name': self.name,
+            'number': self.number,
+            'learning_task': {
+                'name': self.learning_task.name,
+            },
+            'classes_count': self.classes_count,
+            'target': self.target,
+        }
+
     @property
     def data(self) -> DatasetData:
         if self._data is None:

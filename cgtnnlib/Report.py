@@ -30,6 +30,8 @@ RawReport: TypeAlias = dict[str, dict | list | str]
 KEY_EVAL = 'eval'
 KEY_LOSS = 'loss'
 KEY_DATASET = 'dataset'
+KEY_MODEL = 'model'
+KEY_TRAIN_NOISE_GENERATOR = 'train_noise_generator'
 
 def now_isoformat() -> str:
     return datetime.now().isoformat()

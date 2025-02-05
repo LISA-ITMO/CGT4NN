@@ -1,8 +1,8 @@
 ## Path generation, dict key generation, etc. - the Hub of Identity
 from typing import Type
 
-from cgtnnlib.Dataset import Dataset
 from cgtnnlib.NoiseGenerator import NoiseGenerator
+from cgtnnlib.constants import MODEL_DIR
 from cgtnnlib.nn.NetworkLike import NetworkLike
 
 
@@ -23,7 +23,7 @@ def model_path(
     iteration: int,
     noise_generator: NoiseGenerator,
 ):
-    return f'pth/{model_name(dataset_number, model_type, p, iteration, noise_generator)}.pth'
+    return f'{MODEL_DIR}/{model_name(dataset_number, model_type, p, iteration, noise_generator)}.pth'
 
 
 def eval_report_key(

@@ -3,7 +3,9 @@
 ## Updated at Wed 4 Dec 2024
 ## v.0.3 - removed train_model_outer()
 
+import os
 from typing import Callable, Iterable
+
 import torch
 import torch.nn as nn
 import torch.nn.init as init
@@ -14,7 +16,7 @@ from IPython.display import clear_output
 from cgtnnlib.Dataset import Dataset
 from cgtnnlib.ExperimentParameters import ExperimentParameters
 from cgtnnlib.NoiseGenerator import NoiseGenerator, no_noise_generator
-from cgtnnlib.Report import KEY_DATASET, KEY_LOSS, Report
+from cgtnnlib.Report import KEY_DATASET, KEY_LOSS, KEY_MODEL, KEY_TRAIN_NOISE_GENERATOR, Report
 from cgtnnlib.ExperimentParameters import iterate_experiment_parameters
 from cgtnnlib.constants import DRY_RUN, EPOCHS, LEARNING_RATE, MODEL_DIR
 from cgtnnlib.torch_device import TORCH_DEVICE
@@ -105,18 +107,23 @@ def create_and_train_model(
     iteration: int,    
     noise_generator: NoiseGenerator
 ):
-    model = AugmentedReLUNetwork(
-        inputs_count=dataset.features_count,
-        outputs_count=dataset.classes_count,
-        p=p
-    )
-
+    model_type = AugmentedReLUNetwork
     model_path = cgtnnlib.path.model_path(
         dataset_number=dataset.number,
-        model_type=type(model),
+        model_type=model_type,
         p=p,
         iteration=iteration,
         noise_generator=noise_generator
+    )
+
+    if os.path.exists(model_path):
+        print(f'File already exists at {model_path}. Skipping training.')
+        return
+
+    model = model_type(
+        inputs_count=dataset.features_count,
+        outputs_count=dataset.classes_count,
+        p=p
     )
 
     model.apply(init_weights)
@@ -156,7 +163,12 @@ def create_and_train_model(
         )
 
 
+    report.set(KEY_MODEL, {
+        "class": model.__class__.__name__,
+        "p": p,
+    })
     report.set(KEY_DATASET, dataset.to_dict())
+    report.set(KEY_TRAIN_NOISE_GENERATOR, { "name": noise_generator.name })
     report.set(KEY_LOSS, losses)
 
     torch.save(model.state_dict(), model_path)

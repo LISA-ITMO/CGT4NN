@@ -27,7 +27,7 @@ that represent problem domain (Dataset, Report, etc.) and several procedural
 modules:
 
 - `common.py`: main functions and evaluation
-- `analyze.py`: reads `report.json` and plots graphs
+- `analyze.py`: reads report JSON files and plots graphs
 - `datasets.py`: dataset definitions
 - `plt_extras.py`: matplotlib extensions
 - `torch_device.py`: abstracts away PyTorch device selection

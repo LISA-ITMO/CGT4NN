@@ -32,6 +32,7 @@ modules:
 - `plt_extras.py`: matplotlib extensions
 - `torch_device.py`: abstracts away PyTorch device selection
 - `training.py`: training procedures
+- etc.
 
 The `nn` subdirectory contains PyTorch modules and functions that represent
 neural architectures we evaluate

@@ -39,6 +39,29 @@ neural architectures we evaluate
 
 The `doc` subdirectory contains info about datasets.
 
+## Reports
+
+Trained models are stored in the `pth/` directory. Along with each
+model, a corresponding JSON file is also created which contains
+properties like:
+
+- `started`: date of report creation
+- `saved`: date of last update
+- `model`: model parameters, like classname and hyperparameter value
+- `dataset`: dataset info, including the type of learning task
+  (regression/classification)
+- `loss`: an array of loss values during each iteration of training,
+  for analyzing loss curves
+- `eval`: an object that contains various values of "noise_factor",
+  that represents noise mixed into the input during evaluation, and
+  their corresponding evaluation metrics values: "r2" and "mse" for
+  regression, and "f1", "accuracy", "roc_auc" for classification
+- other, experiment-specific keys
+
+Typically a report is created during the model creation and initial
+training, and then updated during evaluation. This two-step process
+creates the complete report to be analyzed by `analyze.py`.
+
 ## References
 
 1. N. Ghani, J. Hedges, V. Winschel, and P. Zahn. *Compositional game theory*.

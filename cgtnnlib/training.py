@@ -16,7 +16,14 @@ from IPython.display import clear_output
 from cgtnnlib.Dataset import Dataset
 from cgtnnlib.ExperimentParameters import ExperimentParameters
 from cgtnnlib.NoiseGenerator import NoiseGenerator, no_noise_generator
-from cgtnnlib.Report import KEY_DATASET, KEY_LOSS, KEY_MODEL, KEY_TRAIN_NOISE_GENERATOR, Report
+from cgtnnlib.Report import (
+    KEY_DATASET,
+    KEY_LOSS,
+    KEY_MODEL,
+    KEY_TRAIN_NOISE_GENERATOR,
+    KEY_EPOCHS,
+    Report,
+)
 from cgtnnlib.ExperimentParameters import iterate_experiment_parameters
 from cgtnnlib.constants import DRY_RUN, EPOCHS, LEARNING_RATE, MODEL_DIR
 from cgtnnlib.torch_device import TORCH_DEVICE
@@ -169,6 +176,7 @@ def create_and_train_model(
     })
     report.set(KEY_DATASET, dataset.to_dict())
     report.set(KEY_TRAIN_NOISE_GENERATOR, { "name": noise_generator.name })
+    report.set(KEY_EPOCHS, epochs)
     report.set(KEY_LOSS, losses)
 
     torch.save(model.state_dict(), model_path)

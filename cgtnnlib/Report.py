@@ -25,13 +25,15 @@ from cgtnnlib.constants import MODEL_DIR, REPORT_DIR
 
 
 SearchIndex: TypeAlias = pd.DataFrame
-RawReport: TypeAlias = dict[str, dict | list | str]
+ReportEntry = dict | list | int | float | str
+RawReport: TypeAlias = dict[str, ReportEntry]
 
 KEY_EVAL = 'eval'
 KEY_LOSS = 'loss'
 KEY_DATASET = 'dataset'
 KEY_MODEL = 'model'
 KEY_TRAIN_NOISE_GENERATOR = 'train_noise_generator'
+KEY_EPOCHS = 'epochs'
 
 def now_isoformat() -> str:
     return datetime.now().isoformat()
@@ -68,9 +70,7 @@ def get_reports_list() -> list[str]:
 class Report:
     dir: str
     filename: str
-    raw: RawReport = {
-        'started': now_isoformat()
-    }
+    raw: RawReport = {}
     
     def __init__(
         self,
@@ -80,6 +80,7 @@ class Report:
     ):
         self.dir = dir
         self.filename = filename
+        self.set('started', now_isoformat())
         if os.path.exists(self.path):
             print(f"Report found at {self.path}. Loading...")
             self.raw = load_raw_report(self.path)
@@ -91,7 +92,7 @@ class Report:
     def path(self):
         return os.path.join(self.dir, self.filename)
 
-    def set(self, key: str, data: dict | list):
+    def set(self, key: str, data: ReportEntry):
         self.raw[key] = data
 
     def get(self, key: str):
@@ -102,7 +103,7 @@ class Report:
         with open(self.path, 'w') as file:
             json.dump(self.raw, file, indent=4)
         print(f"Report saved to {self.path}.")
-    
+
     def see(self):
         title = f"Report {self.path}"
         print(title)

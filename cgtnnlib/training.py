@@ -112,7 +112,8 @@ def create_and_train_model(
     dry_run: bool,
     p: float,
     iteration: int,    
-    noise_generator: NoiseGenerator
+    noise_generator: NoiseGenerator,
+    must_not_exist: bool = False,
 ):
     model_type = AugmentedReLUNetwork
     model_path = cgtnnlib.path.model_path(
@@ -123,7 +124,7 @@ def create_and_train_model(
         noise_generator=noise_generator
     )
 
-    if os.path.exists(model_path):
+    if must_not_exist and os.path.exists(model_path):
         print(f'File already exists at {model_path}. Skipping training.')
         return
 

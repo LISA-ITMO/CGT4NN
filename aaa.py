@@ -18,6 +18,9 @@ p = 0.9
 for iteration in range(iterations):
     experiment_params = ExperimentParameters(iteration, p=p)
 
+    # BUG
+    # NOTHING WORKS
+    # AAAAAA
     tr.create_and_train_model(
         dataset,
         epochs,

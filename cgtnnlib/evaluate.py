@@ -149,6 +149,10 @@ def eval_inner(
     constructor: type,
     report: Report, 
 ):
+    if report.has(KEY_EVAL) is not None:
+        print("Skipping evaluation.")
+        return
+    
     evaluated_model = constructor(
         inputs_count=eval_params.dataset.features_count,
         outputs_count=eval_params.dataset.classes_count,

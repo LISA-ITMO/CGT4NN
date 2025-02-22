@@ -70,7 +70,7 @@ def get_reports_list() -> list[str]:
 class Report:
     dir: str
     filename: str
-    raw: RawReport = {}
+    raw_report: RawReport = {}
     
     def __init__(
         self,
@@ -83,7 +83,7 @@ class Report:
         self.set('started', now_isoformat())
         if os.path.exists(self.path):
             print(f"Report found at {self.path}. Loading...")
-            self.raw = load_raw_report(self.path)
+            self.raw_report = load_raw_report(self.path)
             print("Report loaded.")
         elif must_exist:
             raise LookupError(f'Report at {self.path} must exist, but it doesn\'t')
@@ -93,15 +93,18 @@ class Report:
         return os.path.join(self.dir, self.filename)
 
     def set(self, key: str, data: ReportEntry):
-        self.raw[key] = data
+        self.raw_report[key] = data
+        
+    def has(self, key: str) -> bool:
+        return key in self.raw_report
 
     def get(self, key: str):
-        return self.raw[key]
+        return self.raw_report[key]
 
     def save(self):
         self.set('saved', now_isoformat())
         with open(self.path, 'w') as file:
-            json.dump(self.raw, file, indent=4)
+            json.dump(self.raw_report, file, indent=4)
         print(f"Report saved to {self.path}.")
 
     def see(self):
@@ -109,8 +112,8 @@ class Report:
         print(title)
         print(''.join(['=' for _ in range(0, len(title))]))
         
-        for key in self.raw:
-            value = self.raw[key]
+        for key in self.raw_report:
+            value = self.raw_report[key]
             print(f"{key}: {see_value(value)}")
 
 

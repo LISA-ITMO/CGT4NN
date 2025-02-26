@@ -77,6 +77,12 @@ def plot_deviant_curves_on_ax_or_plt(
 
     ax_or_plt.legend()
 
+    if isinstance(ax_or_plt, plt.Axes):
+        ax_or_plt.grid(True)
+    else:
+        plt.grid(True)
+
+
 def extract_values_from_search_results(
     search_results: pd.DataFrame,
     raw_report: dict[str, Any],

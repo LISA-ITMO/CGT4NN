@@ -46,10 +46,12 @@ def stable_noise_func(alpha, beta, size=1):
 @dataclass
 class NoiseGenerator:
     name: str
+    description: str
     next_sample: Callable[[], float]
 
 no_noise_generator = NoiseGenerator(
     name="NoNoise",
+    description="Нет шума",
     next_sample=lambda: 0,
 )
 
@@ -63,6 +65,7 @@ def target_dispersion_scaled_noise(
     
     return NoiseGenerator(
         name=f"TDS{dataset.number}",
+        description=f"Белый шум с амплитудой {factor} от дисперсии целевой переменной",
         next_sample=lambda: rng.uniform(-1.0, 1.0) * scale,
     )
 
@@ -76,5 +79,6 @@ def stable_noise(
     
     return NoiseGenerator(
         name=f"Stable{dataset.number}A{alpha}B{beta}F{factor}",
+        description=f"Стабильный {factor} от дисперсии целевой переменной, ɑ = {alpha}, β = {beta}",
         next_sample=lambda: stable_noise_func(alpha, beta, 1)[0] * scale
     )

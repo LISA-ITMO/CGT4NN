@@ -179,6 +179,45 @@ def eval_inner(
     report.set(KEY_EVAL, samples)
 
 
+def eval_report_at_path(
+    report_path: str,
+    model_path: str,
+    constructor: type,
+    dataset: Dataset,
+    p: float,
+):
+    report = Report.from_path(report_path)
+
+    if report.has(KEY_EVAL):
+        print("Skipping evaluation.")
+        return
+    
+    evaluated_model = constructor(
+        inputs_count=dataset.features_count,
+        outputs_count=dataset.classes_count,
+        p=p,
+    )
+
+    clear_output(wait=True)
+    print(f'Evaluating model at {model_path}...')
+    evaluated_model.load_state_dict(torch.load(model_path))
+    
+    if is_classification_task(dataset.learning_task):
+        samples = dict(evaluate_classification_over_noise(
+            evaluated_model=evaluated_model,
+            dataset=dataset,
+        ))
+    elif is_regression_task(dataset.learning_task):
+        samples = dict(eval_regression_over_noise(
+            evaluated_model=evaluated_model,
+            dataset=dataset,
+        ))
+    else:
+        raise ValueError(f"Unknown task: {dataset.learning_task}")
+
+    report.set(KEY_EVAL, samples)
+    report.save()
+
 def evaluate(
     experiment_params: ExperimentParameters,
     datasets: list[Dataset]

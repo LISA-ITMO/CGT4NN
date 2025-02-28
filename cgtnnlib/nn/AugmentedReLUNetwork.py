@@ -1,6 +1,7 @@
 import torch.nn as nn
 
 from cgtnnlib.nn.CustomReLULayer import CustomReLULayer
+import torch.nn.functional as F
 
 
 class AugmentedReLUNetwork(nn.Module):
@@ -8,7 +9,13 @@ class AugmentedReLUNetwork(nn.Module):
     Модель B. Нейросеть с переопределённой функцией распространения ошибки
     для функции активации.
     """
-    def __init__(self, inputs_count: int, outputs_count: int, p: float):
+    def __init__(
+        self,
+        inputs_count: int,
+        outputs_count: int,
+        p: float,
+        softmax_output: bool = False,
+    ):
         super(AugmentedReLUNetwork, self).__init__()
 
         self.flatten = nn.Flatten()
@@ -21,6 +28,8 @@ class AugmentedReLUNetwork(nn.Module):
         self.custom_relu2 = CustomReLULayer(p)
 
         self.p = p
+        
+        self.softmax_output = softmax_output
 
     @property
     def inputs_count(self) -> int:
@@ -41,6 +50,10 @@ class AugmentedReLUNetwork(nn.Module):
         x = self.fc2(x)
         x = self.custom_relu2(x)
         x = self.fc3(x)
+
+        # if self.softmax_output:
+        #     x = F.softmax(x, dim=1)
+
         return x
 
     def __str__(self):

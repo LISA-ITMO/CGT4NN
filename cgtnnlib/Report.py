@@ -88,6 +88,14 @@ class Report:
         elif must_exist:
             raise LookupError(f'Report at {self.path} must exist, but it doesn\'t')
     
+    @staticmethod
+    def from_path(
+        path: str,
+        must_exist: bool = False,
+    ) -> 'Report':
+        [dir, filename] = path.split('/', maxsplit=1)
+        return Report(dir, filename, must_exist)
+    
     @property
     def path(self):
         return os.path.join(self.dir, self.filename)

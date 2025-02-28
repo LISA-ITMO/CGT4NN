@@ -3,6 +3,7 @@
 ## Updated at Wed 4 Dec 2024
 ## v.0.3 - removed train_model_outer()
 
+import math
 import os
 from typing import Callable, Iterable
 
@@ -15,6 +16,7 @@ from IPython.display import clear_output
 
 from cgtnnlib.Dataset import Dataset
 from cgtnnlib.ExperimentParameters import ExperimentParameters
+from cgtnnlib.LearningTask import Criterion, is_classification_task
 from cgtnnlib.NoiseGenerator import NoiseGenerator, no_noise_generator
 from cgtnnlib.Report import (
     KEY_DATASET,
@@ -41,14 +43,25 @@ def init_weights(m: nn.Module):
         m.bias.data.fill_(0.01)
 
 
-def add_noise_to_tensor(
-    input: torch.Tensor,
+def add_noise_to_labels_regression(
+    labels: torch.Tensor,
     generate_sample: Callable[[], float],
 ) -> torch.Tensor:
-    return input + torch.tensor(
-        [generate_sample() for _ in range(input.numel())],
-        dtype=input.dtype
-    ).reshape(input.shape)
+    return labels + torch.tensor(
+        [generate_sample() for _ in range(labels.numel())]
+    ).reshape(labels.shape)
+
+
+def add_noise_to_labels_classification(
+    labels: torch.Tensor,
+    generate_sample: Callable[[], float]
+) -> torch.Tensor:
+    t = add_noise_to_labels_regression(
+        labels,
+        generate_sample,
+    )
+    n = t.sub(t.min()).div(t.max() - t.min())
+    return torch.distributions.Bernoulli(probs=n).sample().type(torch.int64)
 
 
 def train_model(
@@ -57,7 +70,7 @@ def train_model(
     epochs: int,
     iteration: int,
     p: float,
-    criterion,
+    criterion: Criterion,
     optimizer,
     noise_generator: NoiseGenerator,
 ) -> list[float]:
@@ -73,20 +86,34 @@ def train_model(
         labels: torch.Tensor
 
         for i, (inputs, labels) in enumerate(dataset.data.train_loader):
-            inputs = inputs.to(TORCH_DEVICE)
-            labels = add_noise_to_tensor(
-                input=labels,
-                generate_sample=noise_generator.next_sample,
-            ).to(TORCH_DEVICE)
+            if is_classification_task(dataset.learning_task):
+                labels = add_noise_to_labels_classification(
+                    labels=labels,
+                    generate_sample=noise_generator.next_sample,
+                )
+            else: 
+                labels = add_noise_to_labels_regression(
+                    labels=labels,
+                    generate_sample=noise_generator.next_sample,
+                )
 
             optimizer.zero_grad()
             outputs = model(inputs)
             outputs = outputs.to(TORCH_DEVICE)
+            # if is_classification_task(dataset.learning_task):
+            #     loss = criterion(outputs.softmax(dim=0), labels.softmax(dim=0))
+            # else:
+            # if is_classification_task(dataset.learning_task):
+            #     loss = criterion(torch.argmax().softmax(dim=0), labels.softmax(dim=0))
+            # else:
             loss = criterion(outputs, labels)
             loss.backward()
             optimizer.step()
 
             loss_item = loss.item()
+            
+            if math.isnan(loss_item):
+                raise RuntimeError('nan loss!')
             
             if i % PRINT_TRAINING_SPAN == 0:
                 clear_output(wait=True)
@@ -131,7 +158,8 @@ def create_and_train_model(
     model = model_type(
         inputs_count=dataset.features_count,
         outputs_count=dataset.classes_count,
-        p=p
+        p=p,
+        softmax_output=is_classification_task(dataset.learning_task)
     )
 
     model.apply(init_weights)

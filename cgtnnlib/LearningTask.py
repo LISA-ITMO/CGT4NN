@@ -9,10 +9,12 @@ import torch.nn as nn
 
 LearningTaskName: TypeAlias = Literal['classification', 'regression']
 
+Criterion = nn.CrossEntropyLoss | nn.MSELoss
+
 @dataclass
 class LearningTask:
     name: LearningTaskName
-    criterion: nn.CrossEntropyLoss | nn.MSELoss
+    criterion: Criterion
     dtype: torch.dtype
     
     def metrics(self):
@@ -28,7 +30,7 @@ class LearningTask:
 CLASSIFICATION_TASK = LearningTask(
     name='classification',
     criterion=nn.CrossEntropyLoss(),
-    dtype=torch.long,
+    dtype=torch.float,
 )
 
 REGRESSION_TASK = LearningTask(

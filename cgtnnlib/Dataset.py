@@ -68,6 +68,10 @@ def tensorize_and_split(
 
 @dataclass
 class Dataset:
+    """
+    `classes_count` must be 1 for regression
+    """
+
     number: int
     name: str
     learning_task: LearningTask

@@ -72,8 +72,10 @@ def train_model(
     p: float,
     criterion: Criterion,
     optimizer,
-    noise_generator: NoiseGenerator,
+    noise_generator: NoiseGenerator = no_noise_generator,
 ) -> list[float]:
+    # XXX: p is only used for printing output; very awkward
+
     losses: list[float] = []
     total_samples = len(dataset.data.train_loader)
     model_name = type(model).__name__

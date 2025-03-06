@@ -4,7 +4,7 @@
 import torch
 
 def pprint(*args):
-    # print(*args)
+    print(*args)
     return
 
 class CustomReLUFunction(torch.autograd.Function):
@@ -19,6 +19,7 @@ class CustomReLUFunction(torch.autograd.Function):
         input, p = ctx.saved_tensors
         grad_input = grad_output.clone()
     
+        # Standard ReLU
         grad_input[input <= 0] = 0
         pprint(">>> grad_input[input <= 0] = 0")
         pprint(">>> grad_input")
@@ -50,10 +51,6 @@ class CustomReLUFunction(torch.autograd.Function):
         pprint(">>> grad_input = grad_input @ diagonal_mask")
         pprint(">>> grad_input")
         pprint(grad_input)
-
-        pprint("ON THE OTHER HAND:")
-        pprint(">>> grad_input @ diagonal_mask ")
-        pprint(grad_input @ diagonal_mask)
 
         return grad_input, None
     

@@ -115,91 +115,66 @@ print(df.sample(n=3).to_markdown())
 - **UCI ML URL:** https://archive.ics.uci.edu/dataset/102/thyroid+disease
 - **Примеры:** 3771
 - **Признаки:** 29
-- **Задача:** регрессия
+- **Задача:** классификация
 
+Набор данных представляет собой медицинские показатели пациентов, у которых подозревается/диагностирован гипертериоз, заболевание щитовидной железы. Наиболее восприимчивы к этому заболеванию пациентки женского пола. Болезнь проявляется повышенным содержанием гормонов трийодтиронина и тироксина.
 
-> allhyper.data
+Целевая переменная принимает значения 3, 2, 1 и 0, обозначающие:
 
-Скатать описание отсюда: https://github.com/MazyCarneiro/Thyroid-disease-dataset/tree/master
+- 3 - нет имеет гипертиреоза (3670 примеров);
+- 2 - *первичный гипертиреоз* (79 примеров);
+- 1 - *компенсированный гипертиреоз* (12 примеров);
+- 0 - *вторичный гипертериоз* (10 примеров).
 
-Это пример несбалансированного датасета. 
-target = 0: 300
-target = 1: 360
-target = 2: 2370
-target = 3: 110100
+<!-- https://github.com/MazyCarneiro/Thyroid-disease-dataset/tree/master -->
 
 ## 5. eye_movements
 
 - **Источник:** [HuggingFace | inria-soda:tabular-benchmark/clf_cat/](https://huggingface.co/datasets/inria-soda/tabular-benchmark/tree/dabc0f5cea2459217a54bf275227e68cda218e9d/clf_cat)
+- **Год**: 2005
+- **OpenML URL**: https://www.openml.org/search?type=data&sort=runs&id=1044&status=active
 - **Примеры:** 7608
 - **Признаки:** 23
 - **Задача:** классификация
 
-Данные [2]
-
-https://pubmed.ncbi.nlm.nih.gov/28140391/
-
-Движения глаз на сложных картинках
-
+Датасет *eye_movements* был собран для исследования возможности выведения релевантности текста на основании считывания движения глаз [2]. Различным траекториям и длительностям движений глаз присвоет один из двух классов (0 - релевантно, 1 - нерелевантно). Каждый пример представляет собой одно видимое испытуемыми слово. Оба класса представлены в наборе в равном количестве.
 
 ## 6. wine_quality
 
 - **Источник:** [HuggingFace | inria-soda:tabular-benchmark/num_reg/](https://huggingface.co/datasets/inria-soda/tabular-benchmark/tree/dabc0f5cea2459217a54bf275227e68cda218e9d/reg_num)
+- **Год**: 2009
 - **Примеры:** 6497
 - **Признаки:** 11
 - **Задача:** регрессия
-- **Год**: 2009
 
-https://archive.ics.uci.edu/dataset/186/wine+quality
-
-http://www3.dsi.uminho.pt/pcortez/wine/
-
-The two datasets are related to red and white variants of the Portuguese "Vinho Verde" wine. For more details, consult: http://www.vinhoverde.pt/en/ or the reference [Cortez et al., 2009].  Due to privacy and logistic issues, only physicochemical (inputs) and sensory (the output) variables are available (e.g. there is no data about grape types, wine brand, wine selling price, etc.).
-
-These datasets can be viewed as classification or regression tasks.  The classes are ordered and not balanced (e.g. there are many more normal wines than excellent or poor ones). Outlier detection algorithms could be used to detect the few excellent or poor wines. Also, we are not sure if all input variables are relevant. So it could be interesting to test feature selection methods.
+Этот набор данных состоит из примеров химического анализа  образцов вин португальского вина "Vinho Verde" [3]. В качестве целоевой переменной представлена вкусовая оценка эксперта по шкале от 3 (худшее) до 9 (лучшее).
 
 ## 7. Hill_Valley_with_noise
 
 - **Источник:** [PMLB | Hill_Valley_with_noise](https://epistasislab.github.io/pmlb/profile/Hill_Valley_with_noise.html)
-- **Примеры:** 1212
+- **Год**: 2008
 - **UCI ML URL:** https://archive.ics.uci.edu/dataset/166/hill+valley
+- **Примеры:** 1212
 - **Признаки:** 100
 - **Задача:** классификация
 
-Each record represents 100 points on a two-dimensional graph. When plotted in order (from 1 through 100) as the Y co-ordinate, the points will create either a Hill (a “bump” in the terrain) or a Valley (a “dip” in the terrain).
+Каждый пример является совокупностью из 100 точек на двухмерном графике. Каждое значение точки это её *y*-координата, а *x* координата варьируется от 0 до 100. Таким образом образуется кривая, которая классифицируется либо как "впадина" (0), либо как "холм" (1).
 
-There are six files, as follows:
-
-(a) Hill_Valley_without_noise_Training.data
-(b) Hill_Valley_without_noise_Testing.data
-
-These first two datasets (without noise) are a training/testing set pair where the hills or valleys have a smooth transition.
-
-(c) Hill_Valley_with_noise_Training.data
-(d) Hill_Valley_with_noise_Testing.data
-
-These next two datasets (with noise) are a training/testing set pair where the terrain is uneven, and the hill or valley is not as obvious when viewed closely. 
-
-(e) Hill_Valley_sample_arff.text
-
-The sample ARFF file is useful for setting up experiments, but is not necessary.
-
-(f) Hill_Valley_visual_examples.jpg
-
-This graphic file shows two example instances from the data.
-
+Набор данных представлен в виде двух вариантов: первый вариант (этот) представляет собой более примеры более грубых "рельефов", а второй – более плавных.
 
 ## 8. Hill_Valley_without_noise
 
 - **Источник:** [PMLB | Hill_Valley_without_noise](https://epistasislab.github.io/pmlb/profile/Hill_Valley_without_noise.html)
+- **Год**: 2008
+- **UCI ML URL:** https://archive.ics.uci.edu/dataset/166/hill+valley
 - **Примеры:** 1212
 - **Признаки:** 100
 - **Задача:** классификация
 
-Hill_Valley_with_noise, но без шума
+Вариант предыдущего набора данных с плавными "рельефами".
 
 ## Список литературы
 
 1. M. Bohanec, V. Rajkovič, *Knowledge acqusition and explanation for multi-attribute decision making*. Proceedings of the 8th International Workshop 'Expert Systems and Their Applications AVIGNON 88', 1:59-78, 1988 (https://kt.ijs.si/MarkoBohanec/pub/Avignon88.pdf)
-2. N. Wilming, S. Onat, J. Ossandón, A. Acik, T. C. Kietzmann, K. Kaspar, R. R. Gamiero, A. Vormberg, P. König. Data from: An extensive dataset of eye movements during viewing of complex images. https://doi.org/10.5061/dryad.9pf75. Dryad Digital Repository, 2017.
+2. Jarkko Salojarvi, Kai Puolamaki, Jaana Simola, Lauri Kovanen, Ilpo Kojo, Samuel Kaski. Inferring Relevance from Eye Movements: Feature Extraction. Helsinki University of Technology, Publications in Computer and Information Science, Report A82. 3 March 2005. Data set at http://www.cis.hut.fi/eyechallenge2005/
 3. P. Cortez, A. Cerdeira, F. Almeida, T. Matos and J. Reis. Modeling wine preferences by data mining from physicochemical properties. In Decision Support Systems, Elsevier, 47(4):547-553, 2009.

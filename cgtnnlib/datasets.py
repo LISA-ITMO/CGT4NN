@@ -249,7 +249,7 @@ datasets: DatasetCollection = DatasetCollection([
     Dataset(
         number=4,
         name='allhyper',
-        learning_task=REGRESSION_TASK,
+        learning_task=REGRESSION_TASK, # FIXME: must be classification
         classes_count=1,
         target=PMLB_TARGET_COL,
         data_maker=lambda: download_pmlb('allhyper'),

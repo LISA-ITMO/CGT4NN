@@ -121,3 +121,4 @@ weasel==0.4.1
 webencodings==0.5.1
 widgetsnbextension==4.0.13
 wrapt==1.17.0
+graphviz==0.20.3

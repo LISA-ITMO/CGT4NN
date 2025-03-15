@@ -175,6 +175,6 @@ print(df.sample(n=3).to_markdown())
 
 ## Список литературы
 
-1. M. Bohanec, V. Rajkovič, *Knowledge acqusition and explanation for multi-attribute decision making*. Proceedings of the 8th International Workshop 'Expert Systems and Their Applications AVIGNON 88', 1:59-78, 1988 (https://kt.ijs.si/MarkoBohanec/pub/Avignon88.pdf)
+1. M. Bohanec, V. Rajkovič, *Knowledge acquisition and explanation for multi-attribute decision making*. Proceedings of the 8th International Workshop 'Expert Systems and Their Applications AVIGNON 88', 1:59-78, 1988 (https://kt.ijs.si/MarkoBohanec/pub/Avignon88.pdf)
 2. Jarkko Salojarvi, Kai Puolamaki, Jaana Simola, Lauri Kovanen, Ilpo Kojo, Samuel Kaski. Inferring Relevance from Eye Movements: Feature Extraction. Helsinki University of Technology, Publications in Computer and Information Science, Report A82. 3 March 2005. Data set at http://www.cis.hut.fi/eyechallenge2005/
 3. P. Cortez, A. Cerdeira, F. Almeida, T. Matos and J. Reis. Modeling wine preferences by data mining from physicochemical properties. In Decision Support Systems, Elsevier, 47(4):547-553, 2009.

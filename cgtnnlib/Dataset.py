@@ -38,34 +38,6 @@ def tensor_dataset_from_dataframe(
     return TensorDataset(X_tensor, y_tensor)
 
 
-def tensorize_and_split(
-    df: pd.DataFrame,
-    target: str,
-    y_dtype: torch.dtype,
-    test_size: float,
-    random_state: int,
-) -> tuple[TensorDataset, TensorDataset]:
-    train_df, val_df = train_test_split(
-        df,
-        test_size=test_size,
-        random_state=random_state
-    )
-
-    return (
-        tensor_dataset_from_dataframe(
-            df=train_df,
-            target=target,
-            y_dtype=y_dtype,
-        ),
-        tensor_dataset_from_dataframe(
-            df=val_df,
-            target=target,
-            y_dtype=y_dtype
-        )
-    )
-
-
-
 @dataclass
 class Dataset:
     """
@@ -117,25 +89,40 @@ class Dataset:
     def data(self) -> DatasetData:
         if self._data is None:
             df = self.data_maker()
-            train, test = tensorize_and_split(
-                df=df,
-                target=self.target,
-                y_dtype=self.learning_task.dtype,
+            y_dtype = self.learning_task.dtype
+
+            train_df, test_df = train_test_split(
+                df,
                 test_size=TEST_SAMPLE_SIZE,
                 random_state=RANDOM_STATE,
             )
-            
+
+            train_tensor, test_tensor = (
+                tensor_dataset_from_dataframe(
+                    df=train_df,
+                    target=self.target,
+                    y_dtype=y_dtype,
+                ),
+                tensor_dataset_from_dataframe(
+                    df=test_df,
+                    target=self.target,
+                    y_dtype=y_dtype,
+                )
+            )
+
             self._data = DatasetData(
                 df=df,
-                train_dataset=train,
-                test_dataset=test,
+                train_df=train_df,
+                test_df=test_df,
+                train_dataset=train_tensor,
+                test_dataset=test_tensor,
                 train_loader=DataLoader(
-                    train,
+                    train_tensor,
                     batch_size=BATCH_SIZE,
                     shuffle=True,
                 ),
                 test_loader=DataLoader(
-                    test,
+                    test_tensor,
                     batch_size=BATCH_SIZE,
                     shuffle=False,
                 ),

@@ -38,6 +38,15 @@ import cgtnnlib.path
 PRINT_TRAINING_SPAN = 499
 
 def init_weights(m: nn.Module):
+    # XXX For ReLU (as opposed to tanh and sigmoid)
+    # XXX He initialization is more appropriate
+    # XXX 
+    # XXX <https://arxiv.org/abs/1502.01852>
+    # XXX     Delving Deep into Rectifiers: Surpassing
+    # XXX     Human-Level Performance on ImageNet Classification
+    # XXX
+    # XXX     Kaiming He, Xiangyu Zhang, Shaoqing Ren, Jian Sun
+
     if isinstance(m, nn.Linear):
         init.xavier_uniform_(m.weight)
         m.bias.data.fill_(0.01)

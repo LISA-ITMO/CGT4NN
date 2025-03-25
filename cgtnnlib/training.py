@@ -37,7 +37,8 @@ import cgtnnlib.path
 
 PRINT_TRAINING_SPAN = 499
 
-def init_weights(m: nn.Module):
+def init_weights_xavier(m: nn.Module):
+    "Usage: `model.apply(init_weights_xavier)`"
     # XXX For ReLU (as opposed to tanh and sigmoid)
     # XXX He initialization is more appropriate
     # XXX 
@@ -83,7 +84,7 @@ def train_model(
     optimizer,
     noise_generator: NoiseGenerator = no_noise_generator,
 ) -> list[float]:
-    # XXX: p is only used for printing output; very awkward
+    # XXX: p and iteration are only used for printing output; very awkward
 
     losses: list[float] = []
     total_samples = len(dataset.data.train_loader)
@@ -173,7 +174,7 @@ def create_and_train_model(
         softmax_output=is_classification_task(dataset.learning_task)
     )
 
-    model.apply(init_weights)
+    model.apply(init_weights_xavier)
     model = model.to(TORCH_DEVICE)
     
     report_name = cgtnnlib.path.model_name(

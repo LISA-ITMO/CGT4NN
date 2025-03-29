@@ -66,12 +66,19 @@ def add_noise_to_labels_classification(
     labels: torch.Tensor,
     generate_sample: Callable[[], float]
 ) -> torch.Tensor:
-    t = add_noise_to_labels_regression(
-        labels,
-        generate_sample,
-    )
-    n = t.sub(t.min()).div(t.max() - t.min())
-    return torch.distributions.Bernoulli(probs=n).sample().type(torch.int64)
+    return labels
+    # XXX Это всё не работает :с
+    # t = add_noise_to_labels_regression(
+    #     labels,
+    #     generate_sample,
+    # )
+    # a = t.max() - t.min()
+    # if a == 0:
+    #     # Special case: all classes in labels are same
+    #     print("WARNING: a == 0")
+    #     return labels
+    # n = t.sub(t.min()).div(a)
+    # return torch.distributions.Bernoulli(probs=n).sample().type(torch.int64)
 
 
 def train_model(
@@ -99,10 +106,12 @@ def train_model(
 
         for i, (inputs, labels) in enumerate(dataset.data.train_loader):
             if is_classification_task(dataset.learning_task):
-                labels = add_noise_to_labels_classification(
-                    labels=labels,
-                    generate_sample=noise_generator.next_sample,
-                )
+                pass
+                # XXX 
+                # labels = add_noise_to_labels_classification(
+                #     labels=labels,
+                #     generate_sample=noise_generator.next_sample,
+                # )
             else: 
                 labels = add_noise_to_labels_regression(
                     labels=labels,
@@ -118,7 +127,10 @@ def train_model(
             # if is_classification_task(dataset.learning_task):
             #     loss = criterion(torch.argmax().softmax(dim=0), labels.softmax(dim=0))
             # else:
-            loss = criterion(outputs, labels)
+            loss = criterion(
+                outputs,
+                labels.long() if is_classification_task(dataset.learning_task) else labels
+            )
             loss.backward()
             optimizer.step()
 

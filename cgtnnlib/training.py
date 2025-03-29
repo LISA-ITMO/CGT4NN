@@ -28,7 +28,7 @@ from cgtnnlib.Report import (
 )
 from cgtnnlib.ExperimentParameters import iterate_experiment_parameters
 from cgtnnlib.constants import DRY_RUN, EPOCHS, LEARNING_RATE, MODEL_DIR
-from cgtnnlib.torch_device import TORCH_DEVICE
+from cgtnnlib.torch_extras import TORCH_DEVICE
 
 from cgtnnlib.nn.AugmentedReLUNetwork import AugmentedReLUNetwork
 

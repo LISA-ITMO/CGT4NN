@@ -1,4 +1,4 @@
-## Project-global torch device
+## Torch extensions
 
 import torch
 

@@ -127,10 +127,7 @@ def train_model(
             # if is_classification_task(dataset.learning_task):
             #     loss = criterion(torch.argmax().softmax(dim=0), labels.softmax(dim=0))
             # else:
-            loss = criterion(
-                outputs,
-                labels.long() if is_classification_task(dataset.learning_task) else labels
-            )
+            loss = criterion(outputs, labels)
             loss.backward()
             optimizer.step()
 

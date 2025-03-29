@@ -89,7 +89,7 @@ class Dataset:
     def data(self) -> DatasetData:
         if self._data is None:
             df = self.data_maker()
-            y_dtype = self.learning_task.dtype
+            y_dtype = self.learning_task.y_dtype
 
             train_df, test_df = train_test_split(
                 df,

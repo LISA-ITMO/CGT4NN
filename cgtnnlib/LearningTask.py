@@ -15,7 +15,7 @@ Criterion = nn.CrossEntropyLoss | nn.MSELoss
 class LearningTask:
     name: LearningTaskName
     criterion: Criterion
-    dtype: torch.dtype
+    y_dtype: torch.dtype
     
     def metrics(self):
         match self.name:
@@ -30,13 +30,13 @@ class LearningTask:
 CLASSIFICATION_TASK = LearningTask(
     name='classification',
     criterion=nn.CrossEntropyLoss(),
-    dtype=torch.float,
+    y_dtype=torch.long,
 )
 
 REGRESSION_TASK = LearningTask(
     name='regression',
     criterion=nn.MSELoss(),
-    dtype=torch.float,
+    y_dtype=torch.float,
 )
 
 def is_classification_task(task: LearningTask) -> bool:

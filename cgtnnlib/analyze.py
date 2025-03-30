@@ -39,6 +39,7 @@ class DeviantCurvePlotModel(TypedDict):
 def plot_deviant_curves_on_ax_or_plt(
     ax_or_plt,
     models: list[DeviantCurvePlotModel],
+    X,
     title: str,
     xlabel: str,
     ylabel: str,
@@ -47,7 +48,8 @@ def plot_deviant_curves_on_ax_or_plt(
     if len(models) == 0:
         raise TypeError("models should not be empty")
     
-    X: pd.Index = models[0]['curve'].index
+    if X is None:
+        X = models[0]['curve'].index
     
     for model in models:
         expected_columns = [0.25, 0.75, 'mean']

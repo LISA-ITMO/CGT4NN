@@ -17,6 +17,7 @@ class LearningTask:
     criterion: Criterion
     y_dtype: torch.dtype
     
+    @property
     def metrics(self):
         match self.name:
             case 'regression':

@@ -13,7 +13,11 @@ Repository includes:
 - `doc` directory with documentation
 - notebooks for running experiments
 
-As of now, the main branch is in flux and many of the stable releases are available at https://disk.yandex.ru/d/aZozDpBlzh_z1A
+As of now, the main branch is in flux. Don't expect it to be stable.
+Most results/revisions are available at
+[the releases page](https://github.com/LISA-ITMO/CGT4NN/releases).
+Older releases are at
+[Yandex Disk](https://disk.yandex.ru/d/aZozDpBlzh_z1A).
 
 ## How to run
 

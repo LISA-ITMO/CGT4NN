@@ -12,7 +12,6 @@ import hashlib
 
 import pandas as pd
 
-from pmlb import fetch_data
 
 from cgtnnlib.DatasetCollection import DatasetCollection
 from cgtnnlib.LearningTask import REGRESSION_TASK, CLASSIFICATION_TASK
@@ -70,7 +69,9 @@ def download_csv(
         
 
 def download_pmlb(dataset_name: str) -> pd.DataFrame:
-    return fetch_data(dataset_name, return_X_y=False, local_cache_dir=DATA_DIR)
+    import pmlb
+
+    return pmlb.fetch_data(dataset_name, return_X_y=False, local_cache_dir=DATA_DIR)
 
 datasets: DatasetCollection = DatasetCollection([
     Dataset(

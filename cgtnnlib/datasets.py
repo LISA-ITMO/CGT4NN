@@ -73,7 +73,7 @@ def download_pmlb(dataset_name: str) -> pd.DataFrame:
 
 ## Dataset #1
 
-def breast_cancer() -> pd.DataFrame:
+def load_breast_cancer() -> pd.DataFrame:
     df = download_csv(
         url='https://raw.githubusercontent.com/dataspelunking/MLwR/refs/heads/master/Machine%20Learning%20with%20R%20(2nd%20Ed.)/Chapter%2003/wisc_bc_data.csv',
         saved_name='wisc_bc_data.csv',
@@ -89,7 +89,7 @@ def breast_cancer() -> pd.DataFrame:
 
 ## Dataset #2
 
-def car_evaluation() -> pd.DataFrame:
+def load_car_evaluation() -> pd.DataFrame:
     df = download_csv(
         url='https://raw.githubusercontent.com/mragpavank/car-evaluation-dataset/refs/heads/master/car_evaluation.csv',
         saved_name='car_evaluation.csv',
@@ -139,7 +139,7 @@ def car_evaluation() -> pd.DataFrame:
 
 ## Dataset #3
 
-def student_performance_factors() -> pd.DataFrame:
+def load_student_performance_factors() -> pd.DataFrame:
     # It's stored in the repo
     df = pd.read_csv('data/StudentPerformanceFactors.csv')
 
@@ -228,7 +228,7 @@ datasets: DatasetCollection = DatasetCollection([
         learning_task=CLASSIFICATION_TASK,
         classes_count=2,
         target='diagnosis',
-        data_maker=breast_cancer,
+        load_data=load_breast_cancer,
     ),
     Dataset(
         number=2,
@@ -236,7 +236,7 @@ datasets: DatasetCollection = DatasetCollection([
         learning_task=CLASSIFICATION_TASK,
         classes_count=4,
         target='class',
-        data_maker=car_evaluation,
+        load_data=load_car_evaluation,
     ),
     Dataset(
         number=3,
@@ -244,7 +244,7 @@ datasets: DatasetCollection = DatasetCollection([
         learning_task=REGRESSION_TASK,
         classes_count=1,
         target='Exam_Score',
-        data_maker=student_performance_factors,
+        load_data=load_student_performance_factors,
     ),
     Dataset(
         number=4,
@@ -252,7 +252,7 @@ datasets: DatasetCollection = DatasetCollection([
         learning_task=REGRESSION_TASK, # FIXME: must be classification
         classes_count=1,
         target=PMLB_TARGET_COL,
-        data_maker=lambda: download_pmlb('allhyper'),
+        load_data=lambda: download_pmlb('allhyper'),
     ),
     Dataset(
         number=5,
@@ -260,7 +260,7 @@ datasets: DatasetCollection = DatasetCollection([
         learning_task=CLASSIFICATION_TASK,
         classes_count=2,
         target='label',
-        data_maker=lambda: download_csv(
+        load_data=lambda: download_csv(
             url='https://huggingface.co/datasets/inria-soda/tabular-benchmark/raw/dabc0f5cea2459217a54bf275227e68cda218e9d/clf_cat/eye_movements.csv',
             saved_name='eye_movements.csv',
             sha1='4ed08bb19912a220a18fa0399821e3ee57dc1094',
@@ -272,7 +272,7 @@ datasets: DatasetCollection = DatasetCollection([
         learning_task=REGRESSION_TASK,
         classes_count=1,
         target='quality',
-        data_maker=lambda: download_csv(
+        load_data=lambda: download_csv(
             url='https://huggingface.co/datasets/inria-soda/tabular-benchmark/raw/dabc0f5cea2459217a54bf275227e68cda218e9d/reg_num/wine_quality.csv',
             saved_name='wine_quality.csv',
             sha1='83caedd8c35eba2146ea8eaf9f1d1dfa208f50ec',
@@ -284,7 +284,7 @@ datasets: DatasetCollection = DatasetCollection([
         learning_task=CLASSIFICATION_TASK,
         classes_count=2,
         target=PMLB_TARGET_COL,
-        data_maker=lambda: download_pmlb('Hill_Valley_with_noise'),
+        load_data=lambda: download_pmlb('Hill_Valley_with_noise'),
     ),
     Dataset(
         number=8,
@@ -292,6 +292,6 @@ datasets: DatasetCollection = DatasetCollection([
         learning_task=CLASSIFICATION_TASK,
         classes_count=2,
         target=PMLB_TARGET_COL,
-        data_maker=lambda: download_pmlb('Hill_Valley_without_noise'),
+        load_data=lambda: download_pmlb('Hill_Valley_without_noise'),
     ),
 ])

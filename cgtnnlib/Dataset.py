@@ -50,7 +50,7 @@ class Dataset:
     # ::: can be derived from DatasetData
     classes_count: int
     target: str
-    data_maker: Callable[[], pd.DataFrame]
+    load_data: Callable[[], pd.DataFrame]
 
     _data: Union[DatasetData, None] = None
 
@@ -88,7 +88,7 @@ class Dataset:
     @property
     def data(self) -> DatasetData:
         if self._data is None:
-            df = self.data_maker()
+            df = self.load_data()
             y_dtype = self.learning_task.y_dtype
 
             train_df, test_df = train_test_split(

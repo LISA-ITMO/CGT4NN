@@ -1,6 +1,6 @@
 import torch.nn as nn
 
-from cgtnnlib.nn.CustomReLULayer import CustomReLULayer
+from cgtnnlib.nn.GradientDropoutReLULayer import GradientDropoutReLULayer
 import torch.nn.functional as F
 
 
@@ -23,30 +23,27 @@ class AugmentedReLUNetworkMultilayer(nn.Module):
 
         self.flatten = nn.Flatten()
         self.p = p
-        self.hidden_layers_count = hidden_layers_count
         self.inner_layer_size = inner_layer_size
+        self.hidden_layers_count = hidden_layers_count
+        self.layers = nn.ModuleList()
 
-        self.hidden_layers = nn.ModuleList()
-
-        self.hidden_layers.append(
-            nn.Linear(inputs_count, self.inner_layer_size)
-        )
-        self.hidden_layers.append(
-            CustomReLULayer(p)
+        input_layer = nn.Linear(inputs_count, self.inner_layer_size)
+        self.layers.append(input_layer)
+        self.layers.append(
+            GradientDropoutReLULayer(p)
         )
 
         # Subtract 1 because we already created the first layer
         for _ in range(hidden_layers_count - 1):
-            self.hidden_layers.append(
+            self.layers.append(
                 nn.Linear(self.inner_layer_size, self.inner_layer_size)
             )
-            self.hidden_layers.append(
-                CustomReLULayer(p)
+            self.layers.append(
+                GradientDropoutReLULayer(p)
             )
 
-        self.hidden_layers.append(
-            nn.Linear(self.inner_layer_size, outputs_count)
-        )
+        output_layer = nn.Linear(self.inner_layer_size, outputs_count)
+        self.layers.append(output_layer)
 
     @property
     def inputs_count(self) -> int:

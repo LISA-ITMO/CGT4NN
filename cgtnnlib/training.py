@@ -28,6 +28,7 @@ from cgtnnlib.Report import (
 )
 from cgtnnlib.ExperimentParameters import iterate_experiment_parameters
 from cgtnnlib.constants import DRY_RUN, EPOCHS, LEARNING_RATE, MODEL_DIR
+from cgtnnlib.nn.AugmentedReLUNetworkMultilayer import AugmentedReLUNetworkMultilayer
 from cgtnnlib.torch_extras import TORCH_DEVICE
 
 from cgtnnlib.nn.AugmentedReLUNetwork import AugmentedReLUNetwork
@@ -116,7 +117,7 @@ def train_model(
                 labels = add_noise_to_labels_regression(
                     labels=labels,
                     generate_sample=noise_generator.next_sample,
-                )
+                ).to(torch.float32)
 
             optimizer.zero_grad()
             outputs = model(inputs)
@@ -234,6 +235,68 @@ def create_and_train_model(
  
     report.save()
 
+
+def super_train_model(
+    make_model: Callable[[], AugmentedReLUNetworkMultilayer],
+    model_path: str,
+    dataset: Dataset,
+    report: Report,
+    epochs: int,
+    learning_rate: float,
+    dry_run: bool,
+    iteration: int,    
+    noise_generator: NoiseGenerator,
+):
+    """Ultimatge Trainer"""
+
+    must_not_exist = True
+
+    if must_not_exist and os.path.exists(model_path):
+        print(f'File already exists at {model_path}. Skipping training.')
+        return
+
+    model = make_model()
+
+    model.apply(init_weights_xavier)
+    model = model.to(TORCH_DEVICE)
+
+    losses: list[float]
+
+    if dry_run:
+        print(f"NOTE: Training model {model} in dry run mode. No changes to weights will be applied. An array of {epochs} -1.0s is generated for running_losses.")
+        losses = [-1.0 for _ in range(epochs)]
+    else:
+        losses = train_model(
+            model=model,
+            dataset=dataset,
+            epochs=epochs,
+            iteration=iteration,
+            p=model.p,
+            criterion=dataset.learning_task.criterion,
+            optimizer=optim.Adam(
+                model.parameters(),
+                lr=learning_rate,
+            ),
+            noise_generator=noise_generator,
+        )
+
+
+    report.set(KEY_MODEL, {
+        "class": model.__class__.__name__,
+        "p": model.p,
+        "inner_layer_size": model.inner_layer_size,
+        "hidden_layers_count": model.hidden_layers_count,
+    })
+
+    report.set(KEY_DATASET, dataset.to_dict())
+    report.set(KEY_TRAIN_NOISE_GENERATOR, { "name": noise_generator.name })
+    report.set(KEY_EPOCHS, epochs)
+    report.set(KEY_LOSS, losses)
+
+    torch.save(model.state_dict(), model_path)
+    print(f"create_and_train_model(): saved model to {model_path}")
+ 
+    report.save()
 
 def create_and_train_all_models(
     datasets: list[Dataset],

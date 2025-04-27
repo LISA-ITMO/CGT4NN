@@ -1,6 +1,6 @@
 import torch.nn as nn
 
-from cgtnnlib.nn.CustomReLULayer import CustomReLULayer
+from cgtnnlib.nn.GradientDropoutReLULayer import GradientDropoutReLULayer
 import torch.nn.functional as F
 
 
@@ -21,9 +21,9 @@ class AugmentedReLUNetwork(nn.Module):
         self.flatten = nn.Flatten()
 
         self.fc1 = nn.Linear(inputs_count, self.inner_layer_size)
-        self.custom_relu1 = CustomReLULayer(p)
+        self.custom_relu1 = GradientDropoutReLULayer(p)
         self.fc2 = nn.Linear(self.inner_layer_size, self.inner_layer_size)
-        self.custom_relu2 = CustomReLULayer(p)
+        self.custom_relu2 = GradientDropoutReLULayer(p)
         self.fc3 = nn.Linear(self.inner_layer_size, outputs_count)
 
         self.p = p

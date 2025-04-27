@@ -3,9 +3,13 @@ import torch
 from cgtnnlib.nn.CustomReLUFunction import CustomReLUFunction
 
 
-class CustomReLULayer(torch.nn.Module):
+class GradientDropoutReLULayer(torch.nn.Module):
+    """
+    Used to be `CustomReLULayer`
+    """
+
     def __init__(self, p: float):
-        super(CustomReLULayer, self).__init__()
+        super(GradientDropoutReLULayer, self).__init__()
         self.p = p
         self.custom_relu_backward = CustomReLUFunction.apply
 

@@ -37,7 +37,7 @@ def stable_noise_func(alpha, beta, size=1):
     
     # Cast to complex to avoid nans due to exponentiation
     X = term1 * term2 * abs(
-      np.cdouble(E / term3)
+      np.cfloat(E / term3)
       ** ((1-alpha)/alpha)
     )
 

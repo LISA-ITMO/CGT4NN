@@ -6,6 +6,7 @@ from sklearn.metrics import f1_score, mean_squared_error, r2_score, roc_auc_scor
 
 import torch
 import torch.nn.functional as F
+import torch.nn as nn
 
 from cgtnnlib.Dataset import Dataset
 from cgtnnlib.EvaluationParameters import EvaluationParameters
@@ -186,6 +187,8 @@ def eval_report_at_path(
     dataset: Dataset,
     p: float,
 ):
+    """DEPRECATED, use super_eval_model"""
+
     report = Report.from_path(report_path)
 
     if report.has(KEY_EVAL):
@@ -217,6 +220,32 @@ def eval_report_at_path(
 
     report.set(KEY_EVAL, samples)
     report.save()
+
+def super_eval_model(
+    dataset: Dataset,
+    model: nn.Module,
+    report: Report,
+):
+    if report.has(KEY_EVAL):
+        print(f"... Skipping evaluation of {report.filename}")
+        return
+
+    if is_classification_task(dataset.learning_task):
+        samples = dict(evaluate_classification_over_noise(
+            evaluated_model=model,
+            dataset=dataset,
+        ))
+    elif is_regression_task(dataset.learning_task):
+        samples = dict(eval_regression_over_noise(
+            evaluated_model=model,
+            dataset=dataset,
+        ))
+    else:
+        raise ValueError(f"Unknown task: {dataset.learning_task}")
+
+    report.set(KEY_EVAL, samples)
+    report.save()
+
 
 def evaluate(
     experiment_params: ExperimentParameters,

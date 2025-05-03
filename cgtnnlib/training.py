@@ -286,6 +286,7 @@ def super_train_model(
         "p": model.p,
         "inner_layer_size": model.inner_layer_size,
         "hidden_layers_count": model.hidden_layers_count,
+        "iteration": iteration,
     })
 
     report.set(KEY_DATASET, dataset.to_dict())

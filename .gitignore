@@ -8,6 +8,8 @@ pth.old/*.pth
 pth.old/*.json
 rev9/*/*.pth
 rev9/*/*.json
+rev9.x/*/*.pth
+rev9.x/*/*.json
 
 # Python bytecode cache
 *.pyc

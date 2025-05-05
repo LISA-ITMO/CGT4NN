@@ -122,3 +122,4 @@ webencodings==0.5.1
 widgetsnbextension==4.0.13
 wrapt==1.17.0
 graphviz==0.20.3
+torchmetrics==1.7.1

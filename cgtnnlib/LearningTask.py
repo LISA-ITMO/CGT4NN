@@ -21,7 +21,7 @@ class LearningTask:
     def metrics(self):
         match self.name:
             case 'regression':
-                return ['r2', 'mse']
+                return ['smape', 'r2', 'mse',]
             case 'classification':
                 return ['f1', 'accuracy', 'roc_auc']
             case _:

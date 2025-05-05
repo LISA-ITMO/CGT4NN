@@ -8,6 +8,8 @@ import torch
 import torch.nn.functional as F
 import torch.nn as nn
 
+from torchmetrics import SymmetricMeanAbsolutePercentageError
+
 from cgtnnlib.Dataset import Dataset
 from cgtnnlib.EvaluationParameters import EvaluationParameters
 from cgtnnlib.ExperimentParameters import ExperimentParameters
@@ -18,6 +20,7 @@ from cgtnnlib.constants import NOISE_FACTORS
 from cgtnnlib.nn.AugmentedReLUNetwork import AugmentedReLUNetwork
 from cgtnnlib.path import eval_report_key
 
+smape_score = SymmetricMeanAbsolutePercentageError()
 
 class EvalAccuracyF1RocAucSamples(TypedDict):
     noise_factor: list[float]
@@ -26,10 +29,11 @@ class EvalAccuracyF1RocAucSamples(TypedDict):
     roc_auc: list[float]
 
 
-class EvalR2MseSamples(TypedDict):
+class EvalR2MseSmapeSamples(TypedDict):
     noise_factor: list[float]
     r2: list[float]
     mse: list[float]
+    smape: list[float]
 
 
 def eval_accuracy_f1_rocauc(
@@ -72,11 +76,11 @@ def eval_accuracy_f1_rocauc(
 
     return float(accuracy), float(f1), float(roc_auc)
 
-def eval_r2_mse(
+def eval_r2_mse_smape(
     evaluated_model: torch.nn.Module,
     dataset: Dataset,
     noise_factor: float,
-) -> tuple[float, float]:
+) -> tuple[float, float, float]:
     evaluated_model.eval()
     all_labels = []
     all_predictions = []
@@ -93,22 +97,29 @@ def eval_r2_mse(
 
     r2 = r2_score(np_all_labels, np_all_predictions)
     mse = mean_squared_error(np_all_labels, np_all_predictions)
+    # np_all_predicitions is a column, smape_score wants an array
+    # alwo we want torch tensors
+    smape = smape_score(
+        torch.tensor(np_all_labels),
+        torch.tensor(np_all_predictions[:, 0]),
+    )
 
-    return float(r2), float(mse)
+    return float(r2), float(mse), float(smape)
 
 
 def eval_regression_over_noise(
     evaluated_model: torch.nn.Module,
     dataset: Dataset,
-)-> EvalR2MseSamples:
-    samples = EvalR2MseSamples({
+)-> EvalR2MseSmapeSamples:
+    samples = EvalR2MseSmapeSamples({
         'noise_factor': NOISE_FACTORS,
         'r2': [],
         'mse': [],
+        'smape': [],
     })
 
     for noise_factor in NOISE_FACTORS:
-        r2, mse = eval_r2_mse(
+        r2, mse, smape = eval_r2_mse_smape(
             evaluated_model=evaluated_model,
             dataset=dataset,
             noise_factor=noise_factor,
@@ -116,6 +127,7 @@ def eval_regression_over_noise(
 
         samples['r2'].append(r2)
         samples['mse'].append(mse)
+        samples['smape'].append(smape)
 
     return samples
 

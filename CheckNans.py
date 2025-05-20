@@ -2,6 +2,7 @@ import os
 import json
 import math
 
+
 def find_nan_in_json_files(pth):
     """
     Проверяет все JSON файлы в каталоге pth на наличие NaN в свойстве "loss",
@@ -16,7 +17,7 @@ def find_nan_in_json_files(pth):
         if filename.endswith(".json"):
             filepath = os.path.join(pth, filename)
             try:
-                with open(filepath, 'r') as f:
+                with open(filepath, "r") as f:
                     data = json.load(f)
 
                 if "loss" in data and isinstance(data["loss"], list):
@@ -31,5 +32,5 @@ def find_nan_in_json_files(pth):
 
 
 if __name__ == "__main__":
-    pth = 'pth/'  
+    pth = "pth/"
     find_nan_in_json_files(pth)

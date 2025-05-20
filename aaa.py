@@ -1,7 +1,11 @@
 from cgtnnlib.constants import LEARNING_RATE, RANDOM_STATE
 import cgtnnlib.training as tr
 import cgtnnlib.datasets as ds
-from cgtnnlib.NoiseGenerator import target_dispersion_scaled_noise, stable_noise, no_noise_generator
+from cgtnnlib.NoiseGenerator import (
+    target_dispersion_scaled_noise,
+    stable_noise,
+    no_noise_generator,
+)
 
 iterations = 10
 epochs = 10
@@ -12,7 +16,7 @@ inner_layer_size = 150
 
 datasets = [
     # ds.datasets[0], # 1
-    ds.datasets['StudentPerformanceFactors'], # 3
+    ds.datasets["StudentPerformanceFactors"],  # 3
     # ds.datasets['allhyper'], # 4
     # ds.datasets['wine_quality'], # 6
 ]
@@ -54,10 +58,13 @@ for i, dataset in enumerate(datasets):
         for p in pp:
             noise_generator = ng_maker(dataset)
             for iteration in range(iterations):
-                os.makedirs(f'rev9/dataset{dataset.number}_p{p}_noise{noise_generator.name}/', exist_ok=True)
+                os.makedirs(
+                    f"rev9/dataset{dataset.number}_p{p}_noise{noise_generator.name}/",
+                    exist_ok=True,
+                )
                 report = Report(
-                    dir='rev9',
-                    filename=f'dataset{dataset.number}_p{p}_noise{noise_generator.name}/report.json'
+                    dir="rev9",
+                    filename=f"dataset{dataset.number}_p{p}_noise{noise_generator.name}/report.json",
                 )
                 tr.super_train_model(
                     make_model=lambda: AugmentedReLUNetworkMultilayer(
@@ -67,7 +74,7 @@ for i, dataset in enumerate(datasets):
                         inner_layer_size=inner_layer_size,
                         hidden_layers_count=3,
                     ),
-                    model_path=f'rev9/dataset{dataset.number}_p{p}_noise{noise_generator.name}/{iteration}.pth',
+                    model_path=f"rev9/dataset{dataset.number}_p{p}_noise{noise_generator.name}/{iteration}.pth",
                     dataset=dataset,
                     report=report,
                     epochs=epochs,

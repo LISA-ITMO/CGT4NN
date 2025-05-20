@@ -5,12 +5,10 @@ from cgtnnlib.datasets import datasets
 
 import torch.optim as optim
 
-p=0.5
+p = 0.5
 dataset = datasets[0]
 model = AugmentedReLUNetwork(
-    inputs_count=dataset.features_count,
-    outputs_count=dataset.classes_count,
-    p=p
+    inputs_count=dataset.features_count, outputs_count=dataset.classes_count, p=p
 )
 
 train_model(
@@ -23,5 +21,5 @@ train_model(
     optimizer=optim.Adam(
         model.parameters(),
         lr=0.05,
-    )
+    ),
 )

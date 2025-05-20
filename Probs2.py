@@ -4,10 +4,9 @@ from typing import Callable
 from cgtnnlib.NoiseGenerator import stable_noise
 import cgtnnlib.datasets as ds
 
+
 def add_noise_to_labels_classification(
-    labels: torch.Tensor,
-    num_classes: int,
-    generate_sample: Callable[[], float]
+    labels: torch.Tensor, num_classes: int, generate_sample: Callable[[], float]
 ) -> torch.Tensor:
     """
     Добавляет шум к меткам классов для многоклассовой классификации.
@@ -30,7 +29,6 @@ def add_noise_to_labels_classification(
 
         probs = probs / probs.sum()
 
-
         noisy_labels[i] = torch.multinomial(probs, 1)[0]
 
     return noisy_labels
@@ -45,5 +43,7 @@ ng = stable_noise(
 
 for i in range(0, 100):
     print(
-        add_noise_to_labels_classification(torch.tensor([1, 2, 0, 2, 3, 0]), 4, ng.next_sample)
+        add_noise_to_labels_classification(
+            torch.tensor([1, 2, 0, 2, 3, 0]), 4, ng.next_sample
+        )
     )

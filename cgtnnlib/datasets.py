@@ -29,8 +29,17 @@ def download_csv(
     url: str,
     saved_name: str,
     sha1: str,
-    features: list[str] | None = None
+    columns: list[str] | None = None
 ) -> pd.DataFrame:
+    """
+    Downloads a CSV file from a `url` and saves it to the default data
+    directory. Before downloading, `download_csv` checks if there's already
+    a file with SHA-1 hash `sha1`. Returns the file's contents
+    as Pandas `DataFrame`.
+    
+    If `columns` is supplied, it's interpreted as a list of column names
+    for tables with no headers.
+    """
     file_path = os.path.join(DATA_DIR, saved_name)
 
     def calculate_sha1(file_path):
@@ -49,10 +58,10 @@ def download_csv(
             raise ValueError(f"SHA1 mismatch for existing file: {file_path}. Expected {sha1}, got {file_sha1}")
         else:
             print(f"File {file_path} exists and SHA1 matches, skipping download.")
-            if features is None:
+            if columns is None:
                 return pd.read_csv(file_path)
             else:
-                return pd.read_csv(file_path, header=None, names=features)
+                return pd.read_csv(file_path, header=None, names=columns)
     else:
         print(f"Downloading {url} to {file_path}")
         urllib.request.urlretrieve(url, file_path)
@@ -62,13 +71,20 @@ def download_csv(
             raise ValueError(f"SHA1 mismatch for downloaded file: {file_path}. Expected {sha1}, got {downloaded_sha1}")
 
 
-    if features is None:
+    if columns is None:
         return pd.read_csv(file_path)
     else:
-        return pd.read_csv(file_path, header=None, names=features)
+        return pd.read_csv(file_path, header=None, names=columns)
         
 
 def download_pmlb(dataset_name: str) -> pd.DataFrame:
+    """
+    Downloads a PMLB dataset, returns it as a Pandas `DataFrame`.
+    
+    PMLB datasets come preprocessed out of the box.
+    
+    See: <https://epistasislab.github.io/pmlb/>
+    """
     import pmlb
 
     return pmlb.fetch_data(dataset_name, return_X_y=False, local_cache_dir=DATA_DIR)
@@ -96,7 +112,7 @@ datasets: DatasetCollection = DatasetCollection([
             url='https://raw.githubusercontent.com/mragpavank/car-evaluation-dataset/refs/heads/master/car_evaluation.csv',
             saved_name='car_evaluation.csv',
             sha1='985852bc1bb34d7cb3c192d6b8e7127cc743e176',
-            features=['buying', 'maint', 'doors', 'persons', 'lug_boot', 'safety', 'class'],
+            columns=['buying', 'maint', 'doors', 'persons', 'lug_boot', 'safety', 'class'],
         )),
     ),
     Dataset(
@@ -113,8 +129,8 @@ datasets: DatasetCollection = DatasetCollection([
     Dataset(
         number=4,
         name='allhyper',
-        learning_task=REGRESSION_TASK, # FIXME: must be classification
-        classes_count=1,
+        learning_task=CLASSIFICATION_TASK,
+        classes_count=4,
         target=PMLB_TARGET_COL,
         load_data=lambda: download_pmlb('allhyper'),
     ),

@@ -174,4 +174,27 @@ datasets: DatasetCollection = DatasetCollection([
         target=PMLB_TARGET_COL,
         load_data=lambda: download_pmlb('Hill_Valley_without_noise'),
     ),
+    Dataset(
+        number=9,
+        name='294_satellite_image',
+        learning_task=REGRESSION_TASK,
+        classes_count=1,
+        target=PMLB_TARGET_COL,
+        load_data=lambda: download_pmlb('294_satellite_image'),
+    ),
+    Dataset(
+        number=10,
+        name='573_cpu_act',
+        learning_task=REGRESSION_TASK,
+        classes_count=1,
+        target=PMLB_TARGET_COL,
+        load_data=lambda: download_pmlb('573_cpu_act'),
+    ),
 ])
+"""
+Datasets collection.
+
+NOTE: https://jamesmccaffrey.wordpress.com/2024/11/01/i-get-tricked-by-the-pollen-dataset/
+
+Please do not add PMLB's "529_pollen" into the collection.
+"""

@@ -1,6 +1,5 @@
 # Описания датасетов
 
-
 ## 1.  wisc_bc_data
 
 - **Источник:** [UCI Machine Learning Repository | Breast Cancer Wisconsin (Diagnostic)](https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic)
@@ -172,6 +171,27 @@ print(df.sample(n=3).to_markdown())
 - **Задача:** классификация
 
 Вариант предыдущего набора данных с плавными "рельефами".
+
+## 9. 294_satellite_image
+- **Источник:** [PMLB | 294_satellite_image](https://epistasislab.github.io/pmlb/profile/294_satellite_image.html)
+- **Год**: 1993
+- **OpenML URL:** https://www.openml.org/search?type=data&sort=runs&id=294&status=active
+- **Задача:** регрессия
+- **Примеры:** 6435
+- **Признаки:** 20
+
+OpenML description:
+
+> The database consists of the multi-spectral values of pixels in 3x3 neighbourhoods in a satellite image, and the classification associated with the central pixel in each neighbourhood. The aim is to predict this classification, given the multi-spectral values. In the sample database, the class of a pixel is coded as a number.
+
+
+## 10.
+
+- **Примеры:** 8192
+- **Признаки:** 20
+
+https://www.openml.org/search?type=data&sort=runs&id=573&status=active
+
 
 ## Список литературы
 

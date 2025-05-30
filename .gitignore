@@ -12,6 +12,8 @@ rev9.2/*/*.pth
 rev9.2/*/*.json
 rev9.x/*/*.pth
 rev9.x/*/*.json
+rev9.3/*/*.pth
+rev9.3/*/*.json
 
 # Python bytecode cache
 *.pyc

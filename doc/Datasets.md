@@ -185,10 +185,10 @@ OpenML description:
 > The database consists of the multi-spectral values of pixels in 3x3 neighbourhoods in a satellite image, and the classification associated with the central pixel in each neighbourhood. The aim is to predict this classification, given the multi-spectral values. In the sample database, the class of a pixel is coded as a number.
 
 
-## 10.
+## 10. 1030_ERA
 
-- **Примеры:** 8192
-- **Признаки:** 20
+- **Примеры:**
+- **Признаки:**
 
 https://www.openml.org/search?type=data&sort=runs&id=573&status=active
 

@@ -192,11 +192,11 @@ datasets: DatasetCollection = DatasetCollection([
     ),
     Dataset(
         number=10,
-        name='573_cpu_act',
+        name='1030_ERA',
         learning_task=REGRESSION_TASK,
         classes_count=1,
         target=PMLB_TARGET_COL,
-        load_data=lambda: download_pmlb('573_cpu_act'),
+        load_data=lambda: download_pmlb('1030_ERA'),
     ),
 ])
 """

@@ -18,18 +18,20 @@ from cgtnnlib.LearningTask import REGRESSION_TASK, CLASSIFICATION_TASK
 from cgtnnlib.Dataset import Dataset
 from cgtnnlib.fn import compose
 from cgtnnlib.constants import DATA_DIR, PMLB_TARGET_COL
-from cgtnnlib.preprocess import preprocess_breast_cancer, preprocess_car_evaluation, preprocess_student_performance_factors
+from cgtnnlib.preprocess import (
+    preprocess_breast_cancer,
+    preprocess_car_evaluation,
+    preprocess_student_performance_factors,
+)
 
 # ::: Here can't be a good place for this
 os.makedirs(DATA_DIR, exist_ok=True)
 
 ## CSV sources
 
+
 def download_csv(
-    url: str,
-    saved_name: str,
-    sha1: str,
-    columns: list[str] | None = None
+    url: str, saved_name: str, sha1: str, features: list[str] | None = None
 ) -> pd.DataFrame:
     """
     Downloads a CSV file from a `url` and saves it to the default data
@@ -44,7 +46,7 @@ def download_csv(
 
     def calculate_sha1(file_path):
         hasher = hashlib.sha1()
-        with open(file_path, 'rb') as f:
+        with open(file_path, "rb") as f:
             while True:
                 chunk = f.read(4096)
                 if not chunk:
@@ -55,7 +57,9 @@ def download_csv(
     if os.path.exists(file_path):
         file_sha1 = calculate_sha1(file_path)
         if file_sha1 != sha1:
-            raise ValueError(f"SHA1 mismatch for existing file: {file_path}. Expected {sha1}, got {file_sha1}")
+            raise ValueError(
+                f"SHA1 mismatch for existing file: {file_path}. Expected {sha1}, got {file_sha1}"
+            )
         else:
             print(f"File {file_path} exists and SHA1 matches, skipping download.")
             if columns is None:
@@ -68,22 +72,26 @@ def download_csv(
         downloaded_sha1 = calculate_sha1(file_path)
         if downloaded_sha1 != sha1:
             os.remove(file_path)
-            raise ValueError(f"SHA1 mismatch for downloaded file: {file_path}. Expected {sha1}, got {downloaded_sha1}")
-
+            raise ValueError(
+                f"SHA1 mismatch for downloaded file: {file_path}. Expected {sha1}, got {downloaded_sha1}"
+            )
 
     if columns is None:
         return pd.read_csv(file_path)
     else:
         return pd.read_csv(file_path, header=None, names=columns)
-        
+
 
 def download_pmlb(dataset_name: str) -> pd.DataFrame:
     """
-    Downloads a PMLB dataset, returns it as a Pandas `DataFrame`.
-    
-    PMLB datasets come preprocessed out of the box.
-    
+    Downloads a dataset from the PML Benchmark datasets.
     See: <https://epistasislab.github.io/pmlb/>
+
+        Args:
+            dataset_name: The name of the dataset to download.
+
+        Returns:
+            pd.DataFrame: A Pandas DataFrame containing the downloaded dataset.
     """
     import pmlb
 

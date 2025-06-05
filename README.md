@@ -6,12 +6,14 @@ the analysis and enhancement of neural networks. We represent neural
 network components as players in open games, aiming to leverage
 game-theoretic tools for improved training and understanding
 
-Repository includes:
+[See presentation (PDF)](doc/Presentation.pdf)
 
-- cgtnnlib, a library for performing the research
+This repository includes:
+
+- `cgtnnlib`, a PyTorch based library for training neural networks
 - `data` directory with some of the data we use
 - `doc` directory with documentation
-- notebooks for running experiments
+- `*.ipynb` notebooks for running experiments
 
 As of now, the main branch is in flux. Don't expect it to be stable.
 Most results/revisions are available at
@@ -21,8 +23,17 @@ Older releases are at
 
 ## How to run
 
-1. Create a virtual environment
-2. Install dependencies: `pip install -r requirements.txt`
+1. Create a virtual environment:
+
+```shell
+python -m venv .venv
+source .venv/bin/activate
+```
+
+2. Install dependencies:
+```shell
+pip install -r requirements.txt
+```
 3. Open a notebook `*.ipynb` file with any .ipynb reader available to you
    and run
 
@@ -35,19 +46,19 @@ modules:
 - `common.py`: main functions and evaluation
 - `analyze.py`: reads report JSON files and plots graphs
 - `datasets.py`: dataset definitions
-- `plt_extras.py`: matplotlib extensions
-- `torch_device.py`: abstracts away PyTorch device selection
 - `training.py`: training procedures
+- `plt_extras.py`: Matplotlib extensions
+- `torch_extras.py`: PyTorch extensions
 - etc.
 
 The `nn` subdirectory contains PyTorch modules and functions that represent
 neural architectures we evaluate
 
-The `doc` subdirectory contains info about datasets.
+The `doc` subdirectory contains info about datasets and a presentation.
 
 ## Reports
 
-Trained models are stored in the `pth/` directory. Along with each
+Trained models are stored in the `pth/` directory (or other). Along with each
 model, a corresponding JSON file is also created which contains
 properties like:
 

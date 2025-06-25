@@ -62,10 +62,10 @@ def download_csv(
             )
         else:
             print(f"File {file_path} exists and SHA1 matches, skipping download.")
-            if columns is None:
+            if features is None:
                 return pd.read_csv(file_path)
             else:
-                return pd.read_csv(file_path, header=None, names=columns)
+                return pd.read_csv(file_path, header=None, names=features)
     else:
         print(f"Downloading {url} to {file_path}")
         urllib.request.urlretrieve(url, file_path)
@@ -76,10 +76,10 @@ def download_csv(
                 f"SHA1 mismatch for downloaded file: {file_path}. Expected {sha1}, got {downloaded_sha1}"
             )
 
-    if columns is None:
+    if features is None:
         return pd.read_csv(file_path)
     else:
-        return pd.read_csv(file_path, header=None, names=columns)
+        return pd.read_csv(file_path, header=None, names=features)
 
 
 def download_pmlb(dataset_name: str) -> pd.DataFrame:
@@ -120,7 +120,7 @@ datasets: DatasetCollection = DatasetCollection([
             url='https://raw.githubusercontent.com/mragpavank/car-evaluation-dataset/refs/heads/master/car_evaluation.csv',
             saved_name='car_evaluation.csv',
             sha1='985852bc1bb34d7cb3c192d6b8e7127cc743e176',
-            columns=['buying', 'maint', 'doors', 'persons', 'lug_boot', 'safety', 'class'],
+            features=['buying', 'maint', 'doors', 'persons', 'lug_boot', 'safety', 'class'],
         )),
     ),
     Dataset(

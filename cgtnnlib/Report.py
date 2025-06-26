@@ -108,7 +108,6 @@ class Report:
             Args:
                 dir: The directory to store the report in.
                 filename: The name of the report file.
-                now_isoformat: A callable that returns the current time in ISO format.
                 must_exist: Whether the report file must already exist.  If True and the
                     file does not exist, a LookupError is raised.
 
@@ -242,7 +241,7 @@ def make_search_index(raw_report: RawReport) -> SearchIndex:
     """
     df = pd.DataFrame([[key] + key.split("_") for key in raw_report.keys()])
 
-    df.columns = ["Key", "Measurement", "Network", "Dataset", "P", "N"]
+    df.columns = pd.Index(["Key", "Measurement", "Network", "Dataset", "P", "N"])
 
     # Remove metadata
     df = df[df["Key"] != "started"]

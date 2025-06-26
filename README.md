@@ -13,7 +13,8 @@ This repository includes:
 - `cgtnnlib`, a PyTorch based library for training neural networks
 - `data` directory with some of the data we use
 - `doc` directory with documentation
-- `*.ipynb` notebooks for running experiments
+- `Notebooks/` with the primary experimental notebooks
+- `Examples/` with miscellaneous notebooks
 
 As of now, the main branch is in flux. Don't expect it to be stable.
 Most results/revisions are available at

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-#~~~ GenAI Disclaimer ~~~#
+# ~~~ GenAI Disclaimer ~~~ #
 #
 # Largely generated using Gemini 2.5 Flash.
 #
@@ -23,13 +23,13 @@
 # >
 # > Language preference - python
 #
-#~~~ End of GenAI Disclaimer ~~~#
+# ~~~ End of GenAI Disclaimer ~~~ #
 
-import os
 import nbformat
 import argparse
 import shutil
 from pathlib import Path
+
 
 def add_cell_and_move_notebook(notebook_path: Path, output_dir: Path):
     """
@@ -52,7 +52,7 @@ def add_cell_and_move_notebook(notebook_path: Path, output_dir: Path):
 
     try:
         # Load the notebook
-        with open(notebook_path, 'r', encoding='utf-8') as f:
+        with open(notebook_path, "r", encoding="utf-8") as f:
             notebook_content = nbformat.read(f, as_version=4)
 
         # Define the cell to be added
@@ -69,7 +69,7 @@ os.chdir('..')"""
         # Save the modified notebook temporarily (or overwrite if that's acceptable)
         # For safety, let's overwrite for now, but you could save to a temp file
         # and then move it, or save directly to the destination.
-        with open(notebook_path, 'w', encoding='utf-8') as f:
+        with open(notebook_path, "w", encoding="utf-8") as f:
             nbformat.write(notebook_content, f)
         print(f"Cell added successfully to {notebook_path.name}.")
 
@@ -90,7 +90,10 @@ os.chdir('..')"""
         # A common one would be JSONDecodeError or other file I/O errors.
         print(f"Error reading or parsing notebook '{notebook_path.name}': {e}")
     except Exception as e:
-        print(f"An unexpected error occurred while processing '{notebook_path.name}': {e}")
+        print(
+            f"An unexpected error occurred while processing '{notebook_path.name}': {e}"
+        )
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -101,13 +104,14 @@ def main():
         metavar="NOTEBOOK",
         type=str,
         nargs="+",
-        help="One or more .ipynb files to process. Wildcards like '*.ipynb' are supported."
+        help="One or more .ipynb files to process. Wildcards like '*.ipynb' are supported.",
     )
     parser.add_argument(
-        "-o", "--output-dir",
+        "-o",
+        "--output-dir",
         type=str,
         default="Examples",
-        help="The directory to move the processed notebooks to. Defaults to 'Examples'."
+        help="The directory to move the processed notebooks to. Defaults to 'Examples'.",
     )
 
     args = parser.parse_args()
@@ -125,7 +129,9 @@ def main():
         matching_notebooks = list(current_dir.glob(notebook_pattern))
 
         if not matching_notebooks:
-            print(f"Warning: No notebooks found matching pattern '{notebook_pattern}'. Skipping.")
+            print(
+                f"Warning: No notebooks found matching pattern '{notebook_pattern}'. Skipping."
+            )
             skipped_count += 1
             continue
 
@@ -137,10 +143,11 @@ def main():
                 print(f"Skipping '{notebook_path.name}': Not a .ipynb file.")
                 skipped_count += 1
 
-    print(f"\n--- Summary ---")
+    print("\n--- Summary ---")
     print(f"Processed {processed_count} notebook(s).")
     print(f"Skipped {skipped_count} file(s) or pattern(s).")
     print(f"Output directory: '{output_directory.resolve()}'")
+
 
 if __name__ == "__main__":
     main()

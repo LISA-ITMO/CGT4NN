@@ -80,6 +80,17 @@ Typically a report is created during the model creation and initial
 training, and then updated during evaluation. This two-step process
 creates the complete report to be analyzed by `analyze.py`.
 
+## Linting
+
+These commands will format code for you:
+
+```bash
+pip install "black[jupyter]"
+
+python -m black cgtnnlib/**/*.py
+python -m black **/*.ipynb
+```
+
 ## References
 
 1. N. Ghani, J. Hedges, V. Winschel, and P. Zahn. *Compositional game theory*.

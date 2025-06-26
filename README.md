@@ -80,6 +80,14 @@ Typically a report is created during the model creation and initial
 training, and then updated during evaluation. This two-step process
 creates the complete report to be analyzed by `analyze.py`.
 
+## Running tests:
+
+```bash
+pip install pytest==8.4.1
+
+pytest tests/ --cov=.
+```
+
 ## Linting
 
 These commands will format code for you:
